@@ -39,4 +39,30 @@ public class UserController {
       return ResponseEntity.status(500).body("서버 내부 오류: " + e.getMessage());
     }
   }
+
+  @PutMapping("/{id}")
+  @Operation(summary = "닉네임 수정", description = "ID를 사용하여 닉네임을 수정합니다.")
+  public ResponseEntity<?> updateNickname(@PathVariable Long id, @RequestBody UserRequest userRequest) {
+    try {
+      User updatedUser = userService.updateUser(id, userRequest.getNickname());
+      return ResponseEntity.ok(updatedUser);
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body("서버 내부 오류: " + e.getMessage());
+    }
+  }
+
+  @DeleteMapping("/{id}")
+  @Operation(summary = "닉네임 삭제", description = "ID를 사용하여 닉네임을 삭제합니다.")
+  public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+    try {
+      userService.deleteUser(id);
+      return ResponseEntity.ok("사용자가 성공적으로 삭제되었습니다.");
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body("서버 내부 오류: " + e.getMessage());
+    }
+  }
 }
