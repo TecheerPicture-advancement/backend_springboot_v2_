@@ -2,34 +2,23 @@ package com.techeerpicture.TecheerPicture.Image;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.techeerpicture.TecheerPicture.User.User; // User 클래스 임포트
-import com.techeerpicture.TecheerPicture.User.UserRepository; // UserRepository 임포트
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.Optional;
+
 import java.io.IOException;
 import java.util.UUID;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 
 @Service
 @RequiredArgsConstructor
 public class ImageService {
 
     private final AmazonS3 amazonS3;
-
-    // ImageRepository 의존성 추가
-    private final ImageRepository imagerepository;
-    private final UserRepository userRepository; // UserRepository 추가
-
+    private final ImageRepository imageRepository;
 
     public Image getImageById(Long id) {
-        return imagerepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Image not found or does not belong to user"));
+        return imageRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Image not found"));
     }
 
     public String uploadImage(MultipartFile file) throws IOException {
@@ -50,7 +39,7 @@ public class ImageService {
             uploadedImageUrl = amazonS3.getUrl(bucketName, fileName).toString();
             return uploadedImageUrl;
 
-        }  catch (Exception e) {
+        } catch (Exception e) {
             // 업로드 도중 실패 시, 이미 업로드된 파일 삭제
             if (uploadedImageUrl != null) {
                 amazonS3.deleteObject("techeer-picture-bucket", uploadedImageUrl);
@@ -59,18 +48,13 @@ public class ImageService {
         }
     }
 
-    public Image saveImage(Long userId, String imageUrl) {
-        // Image 객체 생성
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
-
+    public Image saveImage(String imageUrl) {
+        // User 없이 Image 저장
         Image image = new Image();
-        image.setUser(user); // 외래 키 설정
         image.setImageUrl(imageUrl); // imageUrl 설정
 
-
         // 데이터 저장
-        return imagerepository.save(image);
+        return imageRepository.save(image);
     }
 
     public void deleteImageFromS3(String imageUrl) {
@@ -87,6 +71,4 @@ public class ImageService {
             System.err.println("Error deleting image from S3: " + e.getMessage());
         }
     }
-
-
 }

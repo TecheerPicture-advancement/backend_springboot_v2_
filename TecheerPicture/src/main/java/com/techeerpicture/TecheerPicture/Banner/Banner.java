@@ -1,5 +1,6 @@
 package com.techeerpicture.TecheerPicture.Banner;
 
+import com.techeerpicture.TecheerPicture.Image.Image;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import jakarta.persistence.*;
@@ -13,11 +14,9 @@ public class Banner {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "image_id", nullable = false)
-  private Long imageId;
-
-  @Column(name = "user_id", nullable = false)
-  private Long userId;
+  @OneToOne
+  @JoinColumn(name = "image_id", referencedColumnName = "id", nullable = false)
+  private Image image;  // Image 타입으로 변경
 
   @Column(name = "main_text_1", nullable = false, length = 255)
   private String mainText1;
@@ -38,8 +37,11 @@ public class Banner {
   @UpdateTimestamp
   @Column(name = "updated_at", nullable = false)
   private LocalDateTime updatedAt;
-  // Getter and Setter methods
 
+  @Column(name = "is_deleted", nullable = false)
+  private boolean isDeleted = false;  // 삭제 여부 플래그 필드 추가
+
+  // Getter and Setter methods
   public Long getId() {
     return id;
   }
@@ -48,20 +50,12 @@ public class Banner {
     this.id = id;
   }
 
-  public Long getImageId() {
-    return imageId;
+  public Image getImage() {
+    return image;
   }
 
-  public void setImageId(Long imageId) {
-    this.imageId = imageId;
-  }
-
-  public Long getUserId() {
-    return userId;
-  }
-
-  public void setUserId(Long userId) {
-    this.userId = userId;
+  public void setImage(Image image) {
+    this.image = image;
   }
 
   public String getMainText1() {
@@ -110,5 +104,13 @@ public class Banner {
 
   public void setUpdatedAt(LocalDateTime updatedAt) {
     this.updatedAt = updatedAt;
+  }
+
+  public boolean getIsDeleted() {
+    return isDeleted;
+  }
+
+  public void setIsDeleted(boolean isDeleted) {
+    this.isDeleted = isDeleted;
   }
 }

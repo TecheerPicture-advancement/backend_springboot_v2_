@@ -2,6 +2,8 @@ package com.techeerpicture.TecheerPicture.Banner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.techeerpicture.TecheerPicture.Image.Image;
+import com.techeerpicture.TecheerPicture.Image.ImageRepository;
 
 @Service
 public class BannerService {
@@ -12,7 +14,14 @@ public class BannerService {
   @Autowired
   private GPTService gptService; // GPTService 주입
 
+  @Autowired
+  private ImageRepository imageRepository; // ImageRepository 주입
+
   public Banner createBanner(BannerRequest request) {
+    // Image 엔티티 조회
+    Image image = imageRepository.findById(request.getImageId())
+        .orElseThrow(() -> new RuntimeException("이미지를 찾을 수 없습니다."));
+
     // GPT를 이용해 광고 문구 생성
     GeneratedTexts texts = gptService.generateAdTexts(
         request.getItemName(),
@@ -27,8 +36,7 @@ public class BannerService {
     banner.setServText1(texts.getServText1());
     banner.setMainText2(texts.getMainText2());
     banner.setServText2(texts.getServText2());
-    banner.setImageId(request.getImageId());
-    banner.setUserId(request.getUserId());
+    banner.setImage(image); // Image 설정
 
     return bannerRepository.save(banner);
   }
@@ -40,6 +48,10 @@ public class BannerService {
 
   public Banner updateBanner(Long bannerId, BannerRequest request) {
     return bannerRepository.findById(bannerId).map(banner -> {
+      // Image 엔티티 조회
+      Image image = imageRepository.findById(request.getImageId())
+          .orElseThrow(() -> new RuntimeException("이미지를 찾을 수 없습니다."));
+
       // GPT를 이용해 광고 문구 재생성
       GeneratedTexts texts = gptService.generateAdTexts(
           request.getItemName(),
@@ -53,8 +65,7 @@ public class BannerService {
       banner.setServText1(texts.getServText1());
       banner.setMainText2(texts.getMainText2());
       banner.setServText2(texts.getServText2());
-      banner.setImageId(request.getImageId());
-      banner.setUserId(request.getUserId());
+      banner.setImage(image); // Image 업데이트
 
       return bannerRepository.save(banner);
     }).orElseThrow(() -> new RuntimeException("배너를 찾을 수 없습니다."));
