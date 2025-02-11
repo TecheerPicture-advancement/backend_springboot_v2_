@@ -3,5 +3,7 @@
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/TecheerPicture/src/main/resources/db/migration/V1__init.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/TecheerPicture/src/main/resources/db/migration/V2__update_banner_table.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/TecheerPicture/src/main/resources/db/migration/V3__Create_background_table.sql" dialect="GenericSQL" />
+    <file url="PROJECT" dialect="MySQL" />
   </component>
 </project>

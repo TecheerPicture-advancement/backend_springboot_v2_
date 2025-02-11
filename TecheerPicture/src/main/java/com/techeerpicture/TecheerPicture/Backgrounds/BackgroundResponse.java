@@ -1,41 +1,49 @@
-package com.techeerpicture.TecheerPicture.Background;
+package com.techeerpicture.TecheerPicture.Backgrounds;
 
 public class BackgroundResponse {
+    private Long id;
+    private String imageUrl;
+    private String scene;
+    private String prompt;
 
-    private String taskId;
-    private String s3Url;
-    private Long backgroundId;
-    private int code;
-
-    public int getCode() {
-        return code;
+    // 매개변수를 받는 생성자 추가
+    public BackgroundResponse(Long id, String imageUrl, String scene, String prompt) {
+        this.id = id;
+        this.imageUrl = imageUrl;
+        this.scene = scene;
+        this.prompt = prompt;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    // Getters and Setters
+    public Long getId() {
+        return id;
     }
 
-    public String getTaskId() {
-        return taskId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public String getS3Url() {
-        return s3Url;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
-    public void setS3Url(String s3Url) {
-        this.s3Url = s3Url;
+    public String getScene() {
+        return scene;
     }
 
-    public Long getBackgroundId() {
-        return backgroundId;
+    public void setScene(String scene) {
+        this.scene = scene;
     }
 
-    public void setBackgroundId(Long backgroundId) {
-        this.backgroundId = backgroundId;
+    public String getPrompt() {
+        return prompt;
+    }
+
+    public void setPrompt(String prompt) {
+        this.prompt = prompt;
     }
 }

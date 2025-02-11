@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Table(name = "image")
 public class Image {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,4 +28,13 @@ public class Image {
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
+
+    public String getImageUrl() {
+        return this.imageUrl;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }
