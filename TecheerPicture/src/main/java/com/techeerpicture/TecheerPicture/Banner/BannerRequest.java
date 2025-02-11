@@ -20,9 +20,6 @@ public class BannerRequest {
   @Schema(description = "이미지 ID", example = "1")
   private Long imageId;
 
-  @Schema(description = "유저 ID", example = "1")
-  private Long userId;
-
   // Getter 및 Setter
   public String getItemName() {
     return itemName;
@@ -62,13 +59,5 @@ public class BannerRequest {
 
   public void setImageId(Long imageId) {
     this.imageId = imageId;
-  }
-
-  public Long getUserId() {
-    return userId;
-  }
-
-  public void setUserId(Long userId) {
-    this.userId = userId;
   }
 }
