@@ -1,7 +1,7 @@
-package com.techeerpicture.TecheerPicture.RecreatedBackground;
+package com.techeerpicture.TecheerPicture.RecreatedBackgrounds;
 
 import io.swagger.v3.oas.annotations.Operation;
-import com.techeerpicture.TecheerPicture.Background.Background;
+import com.techeerpicture.TecheerPicture.Backgrounds.Background;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

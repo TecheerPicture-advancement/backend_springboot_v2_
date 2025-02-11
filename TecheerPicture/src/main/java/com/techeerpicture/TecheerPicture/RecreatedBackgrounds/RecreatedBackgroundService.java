@@ -1,10 +1,10 @@
-package com.techeerpicture.TecheerPicture.RecreatedBackground;
+package com.techeerpicture.TecheerPicture.RecreatedBackgrounds;
 
-import com.techeerpicture.TecheerPicture.Background.BackgroundRepository;
-import com.techeerpicture.TecheerPicture.Background.Background;
-import com.techeerpicture.TecheerPicture.Background.PixelcutService;
-import com.techeerpicture.TecheerPicture.Background.PixelcutRequest; // ✅ 추가
-import com.techeerpicture.TecheerPicture.Background.ImageTransform; // ✅ 추가
+import com.techeerpicture.TecheerPicture.Backgrounds.BackgroundRepository;
+import com.techeerpicture.TecheerPicture.Backgrounds.Background;
+import com.techeerpicture.TecheerPicture.Backgrounds.PixelcutService;
+import com.techeerpicture.TecheerPicture.Backgrounds.PixelcutRequest; // ✅ 추가
+import com.techeerpicture.TecheerPicture.Backgrounds.ImageTransform; // ✅ 추가
 import com.techeerpicture.TecheerPicture.Image.ImageRepository;
 import com.techeerpicture.TecheerPicture.Image.Image;
 import com.fasterxml.jackson.databind.JsonNode;

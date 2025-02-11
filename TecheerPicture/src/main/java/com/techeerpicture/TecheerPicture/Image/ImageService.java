@@ -14,11 +14,11 @@ import java.util.UUID;
 public class ImageService {
 
     private final AmazonS3 amazonS3;
-    private final ImageRepository imageRepository;
+    private final ImageRepository imagerepository;
 
     public Image getImageById(Long id) {
-        return imageRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Image not found"));
+        return imagerepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("이미지를 찾을 수 없습니다: ID = " + id));
     }
 
     public String uploadImage(MultipartFile file) throws IOException {
@@ -40,35 +40,41 @@ public class ImageService {
             return uploadedImageUrl;
 
         } catch (Exception e) {
-            // 업로드 도중 실패 시, 이미 업로드된 파일 삭제
             if (uploadedImageUrl != null) {
                 amazonS3.deleteObject("techeer-picture-bucket", uploadedImageUrl);
             }
-            throw new IOException("Error uploading image: " + e.getMessage(), e);
+            throw new IOException("이미지 업로드 오류: " + e.getMessage(), e);
         }
     }
 
     public Image saveImage(String imageUrl) {
-        // User 없이 Image 저장
         Image image = new Image();
-        image.setImageUrl(imageUrl); // imageUrl 설정
+        image.setImageUrl(imageUrl);
+        return imagerepository.save(image);
+    }
 
-        // 데이터 저장
-        return imageRepository.save(image);
+    public void deleteImageById(Long imageId) {
+        Image image = imagerepository.findById(imageId)
+            .orElseThrow(() -> new RuntimeException("해당 ID로 이미지를 찾을 수 없습니다: " + imageId));
+
+        // S3에서 이미지 삭제
+        deleteImageFromS3(image.getImageUrl());
+
+        // 데이터베이스에서 이미지 삭제
+        imagerepository.deleteById(imageId);
     }
 
     public void deleteImageFromS3(String imageUrl) {
         try {
-            // S3 버킷 이름
             String bucketName = "techeer-picture-bucket";
-
-            // S3에서 객체 키 추출 (URL에서 파일 이름만 가져오기)
-            String objectKey = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
-
-            // S3에서 파일 삭제
+            String objectKey = extractKeyFromS3Url(imageUrl);
             amazonS3.deleteObject(bucketName, objectKey);
         } catch (Exception e) {
-            System.err.println("Error deleting image from S3: " + e.getMessage());
+            System.err.println("S3에서 이미지를 삭제할 수 없습니다: " + e.getMessage());
         }
+    }
+
+    private String extractKeyFromS3Url(String imageUrl) {
+        return imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
     }
 }
