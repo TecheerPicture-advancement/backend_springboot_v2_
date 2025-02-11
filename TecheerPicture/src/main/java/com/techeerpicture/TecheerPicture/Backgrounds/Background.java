@@ -1,4 +1,4 @@
-package com.techeerpicture.TecheerPicture.Background;
+package com.techeerpicture.TecheerPicture.Backgrounds;
 
 import java.io.Serializable;
 import jakarta.persistence.*;
@@ -23,6 +23,9 @@ public class Background {
     private String prompt;
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean isDeleted = false;
+    @Column(nullable = true)
+    private Long isRecreated;
+
 
     public void setImageId(Long imageId) {this.imageId = imageId;}
 
@@ -37,6 +40,15 @@ public class Background {
     public void setScene(String scene) {this.scene = scene;}
 
     public void setPrompt(String prompt) {this.prompt = prompt;}
+
+    public void setIsDeleted(boolean isDeleted) { this.isDeleted = isDeleted; }
+
+    public Long getIsRecreated() {
+        return isRecreated;
+    }
+
+
+    public Long getId() {return id;}
 
     public Long getImageId() {return imageId;}
 
@@ -54,6 +66,8 @@ public class Background {
 
     public boolean getIsDeleted() { return isDeleted; }
 
-    public void setIsDeleted(boolean isDeleted) { this.isDeleted = isDeleted; }
+    public void setIsRecreated(Long isRecreated) {
+        this.isRecreated = isRecreated;
+    }
 
 }
