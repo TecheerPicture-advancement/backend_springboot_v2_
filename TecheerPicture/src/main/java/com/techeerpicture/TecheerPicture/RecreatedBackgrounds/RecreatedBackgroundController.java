@@ -18,7 +18,7 @@ public class RecreatedBackgroundController {
   }
 
   @Operation(summary = "배경 이미지 재생성", description = "기존 Background 데이터를 기반으로 새로운 배경을 재생성합니다.")
-  @GetMapping("/{backgroundId}/recreate")
+  @PostMapping("/{backgroundId}/recreate")
   public ResponseEntity<Background> recreateBackground(@PathVariable Long backgroundId) { // ✅ Background 반환
     Background recreatedBackground = recreatedBackgroundService.recreateBackground(backgroundId);
     return ResponseEntity.ok(recreatedBackground);
