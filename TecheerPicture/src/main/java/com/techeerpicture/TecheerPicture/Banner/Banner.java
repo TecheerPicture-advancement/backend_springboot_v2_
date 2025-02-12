@@ -16,7 +16,7 @@ public class Banner {
 
   @OneToOne
   @JoinColumn(name = "image_id", referencedColumnName = "id", nullable = false)
-  private Image image;  // Image 타입으로 변경
+  private Image image;
 
   @Column(name = "main_text_1", nullable = false, length = 255)
   private String mainText1;
@@ -30,6 +30,18 @@ public class Banner {
   @Column(name = "serv_text_2", nullable = false, length = 255)
   private String servText2;
 
+  @Column(name = "item_name", nullable = false, length = 255)
+  private String itemName;
+
+  @Column(name = "item_concept", nullable = false, length = 255)
+  private String itemConcept;
+
+  @Column(name = "item_category", nullable = false, length = 255)
+  private String itemCategory;
+
+  @Column(name = "prompt", nullable = false, length = 500)
+  private String prompt; // `add_information` 값이 여기 저장됨
+
   @CreationTimestamp
   @Column(name = "created_at", nullable = false, updatable = false)
   private LocalDateTime createdAt;
@@ -39,9 +51,9 @@ public class Banner {
   private LocalDateTime updatedAt;
 
   @Column(name = "is_deleted", nullable = false)
-  private boolean isDeleted = false;  // 삭제 여부 플래그 필드 추가
+  private boolean isDeleted = false;
 
-  // Getter and Setter methods
+  // Getter & Setter
   public Long getId() {
     return id;
   }
@@ -88,6 +100,38 @@ public class Banner {
 
   public void setServText2(String servText2) {
     this.servText2 = servText2;
+  }
+
+  public String getItemName() {
+    return itemName;
+  }
+
+  public void setItemName(String itemName) {
+    this.itemName = itemName;
+  }
+
+  public String getItemConcept() {
+    return itemConcept;
+  }
+
+  public void setItemConcept(String itemConcept) {
+    this.itemConcept = itemConcept;
+  }
+
+  public String getItemCategory() {
+    return itemCategory;
+  }
+
+  public void setItemCategory(String itemCategory) {
+    this.itemCategory = itemCategory;
+  }
+
+  public String getPrompt() {
+    return prompt;
+  }
+
+  public void setPrompt(String prompt) {
+    this.prompt = prompt;
   }
 
   public LocalDateTime getCreatedAt() {
