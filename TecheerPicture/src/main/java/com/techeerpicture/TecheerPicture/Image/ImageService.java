@@ -50,7 +50,7 @@ public class ImageService {
     public Image saveImage(String imageUrl) {
         Image image = new Image();
         image.setImageUrl(imageUrl);
-        return imagerepository.save(image);
+        return imagerepository.save(image); // 저장된 Image 객체 반환
     }
 
     public void deleteImageById(Long imageId) {

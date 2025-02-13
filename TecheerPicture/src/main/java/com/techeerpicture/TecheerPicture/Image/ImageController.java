@@ -22,15 +22,16 @@ public class ImageController {
     @Operation(summary = "이미지 업로드", description = "서버에 이미지를 업로드합니다.")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadAndSaveImage(@RequestParam("file") MultipartFile file) {
-        String uploadedImageUrl = null;
         try {
             // S3에 이미지 업로드
-            uploadedImageUrl = imageService.uploadImage(file);
+            String uploadedImageUrl = imageService.uploadImage(file);
 
-            // 업로드된 URL을 DB에 저장
-            imageService.saveImage(uploadedImageUrl);
+            // 업로드된 URL을 DB에 저장하고, 저장된 이미지 ID를 반환
+            Image savedImage = imageService.saveImage(uploadedImageUrl);
+            Long imageId = savedImage.getId(); // 저장된 이미지 ID 가져오기
 
-            return ResponseEntity.ok("이미지가 업로드 중입니다. 업로드가 완료되면 URL이 업데이트 됩니다: " + uploadedImageUrl);
+            return ResponseEntity.ok("이미지가 업로드 중입니다. 업로드가 완료되면 URL이 업데이트 됩니다: " +
+                uploadedImageUrl + "\n이미지 ID: " + imageId);
 
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
