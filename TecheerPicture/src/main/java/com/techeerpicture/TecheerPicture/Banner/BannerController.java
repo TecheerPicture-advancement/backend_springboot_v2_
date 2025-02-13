@@ -22,7 +22,6 @@ public class BannerController {
   public ResponseEntity<Map<String, Object>> createBanner(@RequestBody BannerRequest request) {
     try {
       Banner banner = bannerService.createBanner(request);
-
       // 응답 데이터 구성
       Map<String, Object> data = new LinkedHashMap<>();
       data.put("id", banner.getId());

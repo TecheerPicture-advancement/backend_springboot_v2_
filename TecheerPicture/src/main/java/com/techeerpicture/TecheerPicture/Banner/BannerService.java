@@ -36,6 +36,10 @@ public class BannerService {
     banner.setServText1(texts.getServText1());
     banner.setMainText2(texts.getMainText2());
     banner.setServText2(texts.getServText2());
+    banner.setItemName(request.getItemName());
+    banner.setItemConcept(request.getItemConcept());
+    banner.setItemCategory(request.getItemCategory());
+    banner.setPrompt(request.getAddInformation()); // ✅ add_information을 prompt로 저장
     banner.setImage(image); // Image 설정
 
     return bannerRepository.save(banner);
@@ -65,6 +69,10 @@ public class BannerService {
       banner.setServText1(texts.getServText1());
       banner.setMainText2(texts.getMainText2());
       banner.setServText2(texts.getServText2());
+      banner.setItemName(request.getItemName());
+      banner.setItemConcept(request.getItemConcept());
+      banner.setItemCategory(request.getItemCategory());
+      banner.setPrompt(request.getAddInformation()); // ✅ add_information을 prompt로 저장
       banner.setImage(image); // Image 업데이트
 
       return bannerRepository.save(banner);
