@@ -2,18 +2,32 @@ package com.techeerpicture.TecheerPicture;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.media.Content;
+import io.swagger.v3.oas.models.media.MediaType;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.parameters.RequestBody;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SwaggerConfig {
+
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .info(new Info()
-                        .title("TecheerPicture API")
-                        .version("1.0.0")
-                        .description("TecheerPicture 프로젝트를 위한 API 문서"));
+            .info(new Info()
+                .title("TecheerPicture API")
+                .version("1.0.0")
+                .description("TecheerPicture 프로젝트를 위한 API 문서"))
+            .path("/api/v1/instagram/token", new io.swagger.v3.oas.models.PathItem()
+                .post(new io.swagger.v3.oas.models.Operation()
+                    .requestBody(new RequestBody()
+                        .required(true) // 요청 본문이 필수임을 명시
+                        .content(new Content()
+                            .addMediaType(org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+                                new MediaType().schema(new Schema<>()
+                                    .type("object")
+                                    .addProperty("code", new Schema<String>()
+                                        .example("AQDfzX_4_SpshVISYIBl..."))))))));
     }
-}
 }
