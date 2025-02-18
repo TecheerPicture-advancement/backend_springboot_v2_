@@ -1,8 +1,11 @@
-package com.techeerpicture.TecheerPicture.Background;
+package com.techeerpicture.TecheerPicture.Backgrounds;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PixelcutRequest {
+    @JsonProperty("image_id") // JSON 키 이름을 API 요구사항에 맞게 설정
+    private Long imageId;
+
     @JsonProperty("image_url")
     private String imageUrl;
 
@@ -10,12 +13,16 @@ public class PixelcutRequest {
     private ImageTransform imageTransform;
 
     private String scene;
+
     private String prompt;
 
     @JsonProperty("negative_prompt")
     private String negativePrompt;
 
-    public PixelcutRequest(String imageUrl, ImageTransform imageTransform, String scene, String prompt, String negativePrompt) {
+    public PixelcutRequest() {}
+
+    public PixelcutRequest(Long imageId, String imageUrl, ImageTransform imageTransform, String scene, String prompt, String negativePrompt) {
+        this.imageId = imageId;
         this.imageUrl = imageUrl;
         this.imageTransform = imageTransform;
         this.scene = scene;
@@ -23,22 +30,52 @@ public class PixelcutRequest {
         this.negativePrompt = negativePrompt;
     }
 
-    // Getter 및 Setter
+    // Getters and Setters
+    public Long getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(Long imageId) {
+        this.imageId = imageId;
+    }
+
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public ImageTransform getImageTransform() {
         return imageTransform;
     }
 
+    public void setImageTransform(ImageTransform imageTransform) {
+        this.imageTransform = imageTransform;
+    }
+
     public String getScene() {
         return scene;
+    }
+
+    public void setScene(String scene) {
+        this.scene = scene;
     }
 
     public String getPrompt() {
         return prompt;
     }
 
-    public String getNegativePrompt() { return negativePrompt; }
+    public void setPrompt(String prompt) {
+        this.prompt = prompt;
+    }
+
+    public String getNegativePrompt() {
+        return negativePrompt;
+    }
+
+    public void setNegativePrompt(String negativePrompt) {
+        this.negativePrompt = negativePrompt;
+    }
 }

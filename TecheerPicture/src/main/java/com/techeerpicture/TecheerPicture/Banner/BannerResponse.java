@@ -8,10 +8,10 @@ public class BannerResponse {
   private String servText1;
   private String mainText2;
   private String servText2;
-  private Long imageId;
-  private Long userId;
+  private Long imageId;  // Image ID만 사용
 
-  public BannerResponse(Long id, String message, String mainText1, String servText1, String mainText2, String servText2, Long imageId, Long userId) {
+  // 생성자
+  public BannerResponse(Long id, String message, String mainText1, String servText1, String mainText2, String servText2, Long imageId) {
     this.id = id;
     this.message = message;
     this.mainText1 = mainText1;
@@ -19,8 +19,8 @@ public class BannerResponse {
     this.mainText2 = mainText2;
     this.servText2 = servText2;
     this.imageId = imageId;
-    this.userId = userId;
   }
+
   // Getters and Setters
   public Long getId() {
     return id;
@@ -76,13 +76,5 @@ public class BannerResponse {
 
   public void setImageId(Long imageId) {
     this.imageId = imageId;
-  }
-
-  public Long getUserId() {
-    return userId;
-  }
-
-  public void setUserId(Long userId) {
-    this.userId = userId;
   }
 }

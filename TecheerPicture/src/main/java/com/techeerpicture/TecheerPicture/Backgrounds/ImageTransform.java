@@ -1,21 +1,22 @@
-package com.techeerpicture.TecheerPicture.Background;
+package com.techeerpicture.TecheerPicture.Backgrounds;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-@Schema(description = "이미지 변환 정보")
 public class ImageTransform {
     private double scale;
-    private double x_center;
-    private double y_center;
+    private double xCenter;
+    private double yCenter;
 
     // 기본 생성자
     public ImageTransform() {}
 
-    // 매개변수를 받는 생성자
-    public ImageTransform(double scale, double x_center, double y_center) {
+    // 파라미터를 받는 생성자
+    public ImageTransform(double scale, double xCenter, double yCenter) {
         this.scale = scale;
-        this.x_center = x_center;
-        this.y_center = y_center;
+        this.xCenter = xCenter;
+        this.yCenter = yCenter;
     }
 
     // Getter와 Setter
@@ -27,19 +28,29 @@ public class ImageTransform {
         this.scale = scale;
     }
 
-    public double getX_center() {
-        return x_center;
+    public double getXCenter() {
+        return xCenter;
     }
 
-    public void setX_center(double x_center) {
-        this.x_center = x_center;
+    public void setXCenter(double xCenter) {
+        this.xCenter = xCenter;
     }
 
-    public double getY_center() {
-        return y_center;
+    public double getYCenter() {
+        return yCenter;
     }
 
-    public void setY_center(double y_center) {
-        this.y_center = y_center;
+    public void setYCenter(double yCenter) {
+        this.yCenter = yCenter;
+    }
+
+    // toJson() 메서드 - 클래스 내부에서 정의해야 함
+    public String toJson() {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.writeValueAsString(this);
+        } catch (Exception e) {
+            throw new RuntimeException("Error converting ImageTransform to JSON", e);
+        }
     }
 }

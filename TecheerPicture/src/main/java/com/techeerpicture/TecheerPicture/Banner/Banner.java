@@ -1,5 +1,6 @@
 package com.techeerpicture.TecheerPicture.Banner;
 
+import com.techeerpicture.TecheerPicture.Image.Image;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import jakarta.persistence.*;
@@ -13,11 +14,9 @@ public class Banner {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "image_id", nullable = false)
-  private Long imageId;
-
-  @Column(name = "user_id", nullable = false)
-  private Long userId;
+  @OneToOne
+  @JoinColumn(name = "image_id", referencedColumnName = "id", nullable = false)
+  private Image image;
 
   @Column(name = "main_text_1", nullable = false, length = 255)
   private String mainText1;
@@ -31,6 +30,18 @@ public class Banner {
   @Column(name = "serv_text_2", nullable = false, length = 255)
   private String servText2;
 
+  @Column(name = "item_name", nullable = false, length = 255)
+  private String itemName;
+
+  @Column(name = "item_concept", nullable = false, length = 255)
+  private String itemConcept;
+
+  @Column(name = "item_category", nullable = false, length = 255)
+  private String itemCategory;
+
+  @Column(name = "prompt", nullable = false, length = 500)
+  private String prompt; // `add_information` 값이 여기 저장됨
+
   @CreationTimestamp
   @Column(name = "created_at", nullable = false, updatable = false)
   private LocalDateTime createdAt;
@@ -38,8 +49,11 @@ public class Banner {
   @UpdateTimestamp
   @Column(name = "updated_at", nullable = false)
   private LocalDateTime updatedAt;
-  // Getter and Setter methods
 
+  @Column(name = "is_deleted", nullable = false)
+  private boolean isDeleted = false;
+
+  // Getter & Setter
   public Long getId() {
     return id;
   }
@@ -48,20 +62,12 @@ public class Banner {
     this.id = id;
   }
 
-  public Long getImageId() {
-    return imageId;
+  public Image getImage() {
+    return image;
   }
 
-  public void setImageId(Long imageId) {
-    this.imageId = imageId;
-  }
-
-  public Long getUserId() {
-    return userId;
-  }
-
-  public void setUserId(Long userId) {
-    this.userId = userId;
+  public void setImage(Image image) {
+    this.image = image;
   }
 
   public String getMainText1() {
@@ -96,6 +102,38 @@ public class Banner {
     this.servText2 = servText2;
   }
 
+  public String getItemName() {
+    return itemName;
+  }
+
+  public void setItemName(String itemName) {
+    this.itemName = itemName;
+  }
+
+  public String getItemConcept() {
+    return itemConcept;
+  }
+
+  public void setItemConcept(String itemConcept) {
+    this.itemConcept = itemConcept;
+  }
+
+  public String getItemCategory() {
+    return itemCategory;
+  }
+
+  public void setItemCategory(String itemCategory) {
+    this.itemCategory = itemCategory;
+  }
+
+  public String getPrompt() {
+    return prompt;
+  }
+
+  public void setPrompt(String prompt) {
+    this.prompt = prompt;
+  }
+
   public LocalDateTime getCreatedAt() {
     return createdAt;
   }
@@ -110,5 +148,13 @@ public class Banner {
 
   public void setUpdatedAt(LocalDateTime updatedAt) {
     this.updatedAt = updatedAt;
+  }
+
+  public boolean getIsDeleted() {
+    return isDeleted;
+  }
+
+  public void setIsDeleted(boolean isDeleted) {
+    this.isDeleted = isDeleted;
   }
 }

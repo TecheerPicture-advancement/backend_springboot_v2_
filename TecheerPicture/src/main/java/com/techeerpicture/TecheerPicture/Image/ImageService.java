@@ -2,34 +2,23 @@ package com.techeerpicture.TecheerPicture.Image;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.techeerpicture.TecheerPicture.User.User; // User 클래스 임포트
-import com.techeerpicture.TecheerPicture.User.UserRepository; // UserRepository 임포트
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.Optional;
+
 import java.io.IOException;
 import java.util.UUID;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 
 @Service
 @RequiredArgsConstructor
 public class ImageService {
 
     private final AmazonS3 amazonS3;
-
-    // ImageRepository 의존성 추가
     private final ImageRepository imagerepository;
-    private final UserRepository userRepository; // UserRepository 추가
-
 
     public Image getImageById(Long id) {
         return imagerepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Image not found or does not belong to user"));
+            .orElseThrow(() -> new RuntimeException("이미지를 찾을 수 없습니다: ID = " + id));
     }
 
     public String uploadImage(MultipartFile file) throws IOException {
@@ -50,43 +39,42 @@ public class ImageService {
             uploadedImageUrl = amazonS3.getUrl(bucketName, fileName).toString();
             return uploadedImageUrl;
 
-        }  catch (Exception e) {
-            // 업로드 도중 실패 시, 이미 업로드된 파일 삭제
+        } catch (Exception e) {
             if (uploadedImageUrl != null) {
                 amazonS3.deleteObject("techeer-picture-bucket", uploadedImageUrl);
             }
-            throw new IOException("Error uploading image: " + e.getMessage(), e);
+            throw new IOException("이미지 업로드 오류: " + e.getMessage(), e);
         }
     }
 
-    public Image saveImage(Long userId, String imageUrl) {
-        // Image 객체 생성
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
-
+    public Image saveImage(String imageUrl) {
         Image image = new Image();
-        image.setUser(user); // 외래 키 설정
-        image.setImageUrl(imageUrl); // imageUrl 설정
+        image.setImageUrl(imageUrl);
+        return imagerepository.save(image); // 저장된 Image 객체 반환
+    }
 
+    public void deleteImageById(Long imageId) {
+        Image image = imagerepository.findById(imageId)
+            .orElseThrow(() -> new RuntimeException("해당 ID로 이미지를 찾을 수 없습니다: " + imageId));
 
-        // 데이터 저장
-        return imagerepository.save(image);
+        // S3에서 이미지 삭제
+        deleteImageFromS3(image.getImageUrl());
+
+        // 데이터베이스에서 이미지 삭제
+        imagerepository.deleteById(imageId);
     }
 
     public void deleteImageFromS3(String imageUrl) {
         try {
-            // S3 버킷 이름
             String bucketName = "techeer-picture-bucket";
-
-            // S3에서 객체 키 추출 (URL에서 파일 이름만 가져오기)
-            String objectKey = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
-
-            // S3에서 파일 삭제
+            String objectKey = extractKeyFromS3Url(imageUrl);
             amazonS3.deleteObject(bucketName, objectKey);
         } catch (Exception e) {
-            System.err.println("Error deleting image from S3: " + e.getMessage());
+            System.err.println("S3에서 이미지를 삭제할 수 없습니다: " + e.getMessage());
         }
     }
 
-
+    private String extractKeyFromS3Url(String imageUrl) {
+        return imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+    }
 }

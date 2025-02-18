@@ -1,5 +1,6 @@
-package com.techeerpicture.TecheerPicture.Background;
+package com.techeerpicture.TecheerPicture.Backgrounds;
 
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,8 +12,7 @@ import java.util.Optional;
 @Repository
 public interface BackgroundRepository extends JpaRepository<Background, Long> {
     // 특정 조건으로 이미지 조회
-    @Query("SELECT i.imageUrl FROM Image i WHERE i.id = :id")
-    String findImageUrlById(@Param("id") Long id);
-    // id로 Background db 조회
-    Optional<Background> findById(Long id);
+    @Query("SELECT b.imageUrl FROM Background b WHERE b.id = :id")
+    Optional<String> findImageUrlById(@Param("id") Long id);
+
 }
