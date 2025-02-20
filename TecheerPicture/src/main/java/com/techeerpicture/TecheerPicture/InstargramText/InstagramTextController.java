@@ -10,7 +10,7 @@ import com.techeerpicture.TecheerPicture.Image.ImageRepository;
 import java.util.Map;
 import java.util.Optional;
 
-@Tag(name = "instagram-texts API", description = "인스타 피드 문장 생성 API")
+@Tag(name = "instagram-texts API", description = "인스타 피드 문장 CRUD API")
 @RestController
 @RequestMapping("/api/v1/instagram-texts")
 public class InstagramTextController {
@@ -20,6 +20,9 @@ public class InstagramTextController {
 
     @Autowired
     private InstagramTextService instagramTextService;
+
+    @Autowired
+    private InstagramTextRepository instagramTextRepository;
 
     @Autowired
     private ImageRepository imageRepository;
@@ -40,7 +43,6 @@ public class InstagramTextController {
         }
 
         String generatedText = gptPidText.generateInstagramText(textPrompt);
-
         InstagramText instagramText = instagramTextService.saveGeneratedText(imageId, generatedText);
 
         return ResponseEntity.ok(Map.of(
@@ -51,6 +53,81 @@ public class InstagramTextController {
                         "image_id", instagramText.getImageId(),
                         "instagramText", instagramText.getGeneratedText()
                 )
+        ));
+    }
+
+    @Operation(summary = "Instagram 피드 문장 조회", description = "특정 ID의 Instagram 피드 문장을 조회합니다.")
+    @GetMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> getInstagramText(@PathVariable Long id) {
+        Optional<InstagramText> instagramText = instagramTextRepository.findById(id);
+
+        if (instagramText.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "code", 404,
+                    "message", "Instagram 피드 문장을 찾을 수 없습니다.",
+                    "data", Map.of("id", id)
+            ));
+        }
+
+        return ResponseEntity.ok(Map.of(
+                "code", 200,
+                "message", "Instagram 피드 문장 조회 성공",
+                "data", Map.of(
+                        "id", instagramText.get().getId(),
+                        "image_id", instagramText.get().getImageId(),
+                        "instagramText", instagramText.get().getGeneratedText()
+                )
+        ));
+    }
+
+    @Operation(summary = "Instagram 피드 문장 수정", description = "기존 Instagram 피드 문장을 수정합니다.")
+    @PutMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> updateInstagramText(@PathVariable Long id, @RequestBody InstagramTextRequest request) {
+        Optional<InstagramText> optionalText = instagramTextRepository.findById(id);
+
+        if (optionalText.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "code", 404,
+                    "message", "Instagram 피드 문장을 찾을 수 없습니다.",
+                    "data", Map.of("id", id)
+            ));
+        }
+
+        InstagramText instagramText = optionalText.get();
+        instagramText.setGeneratedText(request.getTextPrompt());
+        instagramText.setUpdatedAt(java.time.LocalDateTime.now());
+        instagramTextRepository.save(instagramText);
+
+        return ResponseEntity.ok(Map.of(
+                "code", 200,
+                "message", "Instagram 피드 문장 수정 성공",
+                "data", Map.of(
+                        "id", instagramText.getId(),
+                        "image_id", instagramText.getImageId(),
+                        "instagramText", instagramText.getGeneratedText()
+                )
+        ));
+    }
+
+    @Operation(summary = "Instagram 피드 문장 삭제", description = "Instagram 피드 문장을 완전히 삭제합니다.")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> deleteInstagramText(@PathVariable Long id) {
+        Optional<InstagramText> optionalText = instagramTextRepository.findById(id);
+
+        if (optionalText.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "code", 404,
+                    "message", "Instagram 피드 문장을 찾을 수 없습니다.",
+                    "data", Map.of("id", id)
+            ));
+        }
+
+        instagramTextRepository.deleteById(id); // ✅ 데이터 완전 삭제
+
+        return ResponseEntity.ok(Map.of(
+                "code", 200,
+                "message", "Instagram 피드 문장 완전 삭제 성공",
+                "data", Map.of("id", id)
         ));
     }
 }
