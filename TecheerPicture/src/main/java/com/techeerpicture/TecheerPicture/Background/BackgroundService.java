@@ -1,4 +1,4 @@
-package com.techeerpicture.TecheerPicture.Backgrounds;
+package com.techeerpicture.TecheerPicture.Background;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -6,16 +6,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.techeerpicture.TecheerPicture.Backgrounds.PixelcutService;
-import com.techeerpicture.TecheerPicture.Backgrounds.Background;
-import com.techeerpicture.TecheerPicture.Backgrounds.BackgroundRepository;
+import com.techeerpicture.TecheerPicture.Background.PixelcutService;
+import com.techeerpicture.TecheerPicture.Background.Background;
+import com.techeerpicture.TecheerPicture.Background.BackgroundRepository;
 import com.techeerpicture.TecheerPicture.Image.Image;
 import com.techeerpicture.TecheerPicture.Image.ImageRepository;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import java.net.MalformedURLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.UUID;
@@ -101,14 +104,13 @@ public class BackgroundService {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode responseJson = objectMapper.readTree(responseBody);
 
-            // ✅ "result_url" 필드에서 값 가져오기 (Pixelcut API 응답에 맞게 수정)
             JsonNode imageUrlNode = responseJson.get("result_url");
 
             if (imageUrlNode == null) {
                 throw new RuntimeException("Pixelcut API 응답에 'result_url' 필드가 없습니다: " + responseBody);
             }
 
-            return imageUrlNode.asText(); // ✅ 올바르게 URL 반환
+            return imageUrlNode.asText();
         } catch (Exception e) {
             throw new RuntimeException("Pixelcut API 응답을 파싱하는 중 오류 발생: " + responseBody, e);
         }
@@ -120,21 +122,21 @@ public class BackgroundService {
      */
     private String uploadImageToS3(String imageUrl) {
         try {
-            // ✅ 1. URL에서 이미지 다운로드
+            // 1. URL에서 이미지 다운로드
             URL url = new URL(imageUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             InputStream inputStream = connection.getInputStream();
 
-            // ✅ 2. S3에 업로드할 파일 이름 생성
+            // 2. S3에 업로드할 파일 이름 생성
             String fileName = "backgrounds/" + UUID.randomUUID() + ".jpg";
 
-            // ✅ 3. S3에 업로드
+            // 3. S3에 업로드
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType("image/jpeg");
             amazonS3.putObject(bucketName, fileName, inputStream, metadata);
 
-            // ✅ 4. 업로드된 S3 이미지 URL 반환
+            // 4. 업로드된 S3 이미지 URL 반환
             return amazonS3.getUrl(bucketName, fileName).toString();
 
         } catch (Exception e) {
@@ -157,11 +159,33 @@ public class BackgroundService {
      */
     public void deleteBackground(Long id) {
         Background background = backgroundRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("해당 ID의 Background를 찾을 수 없습니다: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 Background를 찾을 수 없습니다: " + id));
 
-        background.setIsDeleted(true); // ✅ isDeleted 필드를 true로 변경
-        backgroundRepository.save(background); // ✅ 변경 사항 저장
+        String s3Url = background.getImageUrl();
+        if (s3Url != null && !s3Url.isEmpty()) {
+            deleteImageFromS3(s3Url);
+        }
+
+        backgroundRepository.deleteById(id);
     }
+
+    private void deleteImageFromS3(String s3Url) {
+        try {
+            // S3 URL에서 파일 키(fileKey)만 추출
+            String fileKey = s3Url.substring(s3Url.indexOf("backgrounds/"));
+
+            logger.info("🛠 최종 S3 삭제 요청: bucketName={}, fileKey={}", bucketName, fileKey);
+
+            // S3에서 파일 삭제 요청
+            amazonS3.deleteObject(new DeleteObjectRequest(bucketName, fileKey));
+
+            logger.info("S3에서 삭제 완료: {}", fileKey);
+        } catch (Exception e) {
+            logger.error("S3 이미지 삭제 중 오류 발생: {}", s3Url, e);
+            throw new RuntimeException("S3 이미지 삭제 실패", e);
+        }
+    }
+
 
 
 }

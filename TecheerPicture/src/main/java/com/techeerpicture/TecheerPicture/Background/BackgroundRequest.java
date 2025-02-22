@@ -1,33 +1,26 @@
-package com.techeerpicture.TecheerPicture.Backgrounds;
+package com.techeerpicture.TecheerPicture.Background;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import com.techeerpicture.TecheerPicture.Background.ImageTransform;
 
-public class PixelcutRequest {
-    @JsonProperty("image_id") // JSON 키 이름을 API 요구사항에 맞게 설정
+public class BackgroundRequest {
+
     private Long imageId;
-
-    @JsonProperty("image_url")
-    private String imageUrl;
-
-    @JsonProperty("image_transform")
     private ImageTransform imageTransform;
-
     private String scene;
-
     private String prompt;
-
-    @JsonProperty("negative_prompt")
     private String negativePrompt;
 
-    public PixelcutRequest() {}
+    // 기본 생성자 추가
+    public BackgroundRequest() {}
 
-    public PixelcutRequest(Long imageId, String imageUrl, ImageTransform imageTransform, String scene, String prompt, String negativePrompt) {
+    // 기존의 BackgroundService 주입 방식 제거
+    public BackgroundRequest(Long imageId, ImageTransform imageTransform, String scene, String prompt) {
         this.imageId = imageId;
-        this.imageUrl = imageUrl;
         this.imageTransform = imageTransform;
         this.scene = scene;
         this.prompt = prompt;
-        this.negativePrompt = negativePrompt;
     }
 
     // Getters and Setters
@@ -37,14 +30,6 @@ public class PixelcutRequest {
 
     public void setImageId(Long imageId) {
         this.imageId = imageId;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 
     public ImageTransform getImageTransform() {
@@ -72,7 +57,7 @@ public class PixelcutRequest {
     }
 
     public String getNegativePrompt() {
-        return negativePrompt;
+        return negativePrompt != null ? negativePrompt : "";
     }
 
     public void setNegativePrompt(String negativePrompt) {
