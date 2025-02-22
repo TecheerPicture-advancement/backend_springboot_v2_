@@ -1,4 +1,4 @@
-package com.techeerpicture.TecheerPicture.Banner;
+package com.techeerpicture.TecheerPicture.Banner.entity;
 
 import com.techeerpicture.TecheerPicture.Image.Image;
 import org.hibernate.annotations.CreationTimestamp;

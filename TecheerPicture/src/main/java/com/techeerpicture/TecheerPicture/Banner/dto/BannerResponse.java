@@ -1,4 +1,4 @@
-package com.techeerpicture.TecheerPicture.Banner;
+package com.techeerpicture.TecheerPicture.Banner.dto;
 
 public class BannerResponse {
 
