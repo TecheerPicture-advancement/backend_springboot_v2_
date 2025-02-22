@@ -1,4 +1,4 @@
-package com.techeerpicture.TecheerPicture.Backgrounds;
+package com.techeerpicture.TecheerPicture.Background;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

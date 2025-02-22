@@ -1,7 +1,7 @@
-package com.techeerpicture.TecheerPicture.Backgrounds;
+package com.techeerpicture.TecheerPicture.Background;
 
-import com.techeerpicture.TecheerPicture.Backgrounds.ImageTransform;
-import com.techeerpicture.TecheerPicture.Backgrounds.BackgroundResponse;
+import com.techeerpicture.TecheerPicture.Background.ImageTransform;
+import com.techeerpicture.TecheerPicture.Background.BackgroundResponse;
 import com.techeerpicture.TecheerPicture.Image.ImageService;
 import com.techeerpicture.TecheerPicture.Image.ImageRepository;
 import com.techeerpicture.TecheerPicture.Image.Image;
@@ -18,7 +18,7 @@ import java.util.Optional;
 @Tag(name = "backgrounds API", description = "AI 배경 이미지 생성 API")
 
 @RestController
-@RequestMapping("/api/v1/backgrounds")
+@RequestMapping("/api/v1/background")
 public class BackgroundController {
 
     private final BackgroundService backgroundService;
@@ -68,11 +68,17 @@ public class BackgroundController {
         return ResponseEntity.ok(background);
     }
 
-    @Operation(summary = "AI 배경 이미지 삭제", description = "특정 AI 배경 이미지를 삭제합니다.")
+    @Operation(summary = "AI 배경 이미지 삭제", description = "특정 AI 배경 이미지를 완전히 삭제합니다.")
     @DeleteMapping("/{backgroundId}")
-    public ResponseEntity<String> deleteBackground(@PathVariable Long backgroundId) {
-        backgroundService.deleteBackground(backgroundId);
-        return ResponseEntity.ok("배경 이미지가 삭제되었습니다.");
+    public ResponseEntity<?> deleteBackground(@PathVariable Long backgroundId) {
+        try {
+            backgroundService.deleteBackground(backgroundId);
+            return ResponseEntity.ok("배경 이미지가 삭제되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 ID의 Background를 찾을 수 없습니다: " + backgroundId);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("배경 이미지 삭제 중 오류 발생");
+        }
     }
 
 }

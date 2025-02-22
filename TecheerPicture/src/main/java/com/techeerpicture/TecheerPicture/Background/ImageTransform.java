@@ -1,4 +1,4 @@
-package com.techeerpicture.TecheerPicture.Backgrounds;
+package com.techeerpicture.TecheerPicture.Background;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;

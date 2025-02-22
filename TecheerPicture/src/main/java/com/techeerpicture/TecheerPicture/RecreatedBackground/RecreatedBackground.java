@@ -1,4 +1,4 @@
-package com.techeerpicture.TecheerPicture.RecreatedBackgrounds;
+package com.techeerpicture.TecheerPicture.RecreatedBackground;
 
 import jakarta.persistence.*;
 

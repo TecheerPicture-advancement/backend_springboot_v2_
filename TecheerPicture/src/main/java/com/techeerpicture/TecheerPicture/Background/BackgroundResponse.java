@@ -1,4 +1,4 @@
-package com.techeerpicture.TecheerPicture.Backgrounds;
+package com.techeerpicture.TecheerPicture.Background;
 
 public class BackgroundResponse {
     private Long id;
