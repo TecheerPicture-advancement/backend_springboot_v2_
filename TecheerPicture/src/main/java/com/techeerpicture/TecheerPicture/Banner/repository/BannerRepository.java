@@ -1,6 +1,6 @@
-package com.techeerpicture.TecheerPicture.Banner;
+package com.techeerpicture.TecheerPicture.Banner.repository;
 
-import com.techeerpicture.TecheerPicture.Banner.Banner;
+import com.techeerpicture.TecheerPicture.Banner.entity.Banner;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
