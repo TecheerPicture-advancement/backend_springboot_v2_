@@ -1,9 +1,15 @@
-package com.techeerpicture.TecheerPicture.Banner;
+package com.techeerpicture.TecheerPicture.Banner.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.techeerpicture.TecheerPicture.Image.Image;
 import com.techeerpicture.TecheerPicture.Image.ImageRepository;
+
+import com.techeerpicture.TecheerPicture.Banner.repository.BannerRepository;
+import com.techeerpicture.TecheerPicture.Banner.dto.BannerRequest;
+import com.techeerpicture.TecheerPicture.Banner.entity.Banner;
+import com.techeerpicture.TecheerPicture.Banner.external.GPTService;
+import com.techeerpicture.TecheerPicture.Banner.util.GeneratedTexts;
 
 @Service
 public class BannerService {

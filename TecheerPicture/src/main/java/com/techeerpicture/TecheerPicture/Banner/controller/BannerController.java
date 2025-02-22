@@ -1,4 +1,4 @@
-package com.techeerpicture.TecheerPicture.Banner;
+package com.techeerpicture.TecheerPicture.Banner.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import com.techeerpicture.TecheerPicture.Banner.service.BannerService;
+import com.techeerpicture.TecheerPicture.Banner.dto.BannerRequest;
+import com.techeerpicture.TecheerPicture.Banner.entity.Banner;
+
 
 @RestController
 @RequestMapping("/api/v1/banners")
