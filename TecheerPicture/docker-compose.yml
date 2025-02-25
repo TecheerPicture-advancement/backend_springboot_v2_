@@ -43,6 +43,10 @@ services:
     depends_on: # Flyway 마이그레이션 후 실행
       - db
       - flyway
+    environment:
+      - SPRING_SERVLET_MULTIPART_ENABLED=true
+      - SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE=25MB
+      - SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE=25MB
 
 volumes:
   db_data:
