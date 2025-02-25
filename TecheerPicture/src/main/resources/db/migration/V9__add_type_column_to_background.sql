@@ -1,0 +1,2 @@
+ALTER TABLE background
+    ADD COLUMN type VARCHAR(50) NOT NULL DEFAULT '';

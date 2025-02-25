@@ -76,20 +76,21 @@ public class BackgroundService {
             String apiResponse = pixelcutService.callPixelcutAPI(pixelcutRequest);
             String generatedImageUrl = extractImageUrlFromResponse(apiResponse); // Pixelcut API에서 반환된 이미지 URL
 
-            //Pixelcut API에서 받은 이미지 S3 업로드
+            // Pixelcut API에서 받은 이미지 S3 업로드
             String s3ImageUrl = uploadImageToS3(generatedImageUrl);
 
-            //Background 엔티티 저장
+            // Background 엔티티 저장
             Background background = new Background();
             background.setImageId(backgroundRequest.getImageId());
             background.setScale(backgroundRequest.getImageTransform().getScale());
             background.setXCenter(backgroundRequest.getImageTransform().getXCenter());
             background.setYCenter(backgroundRequest.getImageTransform().getYCenter());
-            background.setImageUrl(s3ImageUrl); //S3 업로드된 URL 저장
+            background.setImageUrl(s3ImageUrl); // S3 업로드된 URL 저장
             background.setScene(backgroundRequest.getScene());
             background.setPrompt(backgroundRequest.getPrompt());
+            background.setType("generate"); // 명시적으로 설정
 
-            return backgroundRepository.save(background); //DB 저장
+            return backgroundRepository.save(background); // DB 저장
 
         } catch (Exception e) {
             throw new RuntimeException("Error generating background", e);
