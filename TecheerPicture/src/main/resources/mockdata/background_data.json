@@ -1,0 +1,24 @@
+[
+  {
+    "imageId": 7,
+    "scale": 0.5,
+    "xcenter": 0.5,
+    "ycenter": 0.5,
+    "scene": "beach",
+    "prompt": "",
+    "imageUrl": "https://techeer-picture-bucket.s3.ap-northeast-2.amazonaws.com/backgrounds/de8f3000-5f9b-4254-abf9-e96aacbe0573.jpg",
+    "isDeleted": false,
+    "isRecreated": 0
+  },
+  {
+    "imageId": 8,
+    "scale": 0.4,
+    "xcenter": 0.5,
+    "ycenter": 0.5,
+    "scene": "",
+    "prompt": "Winter is a magical season when the world is blanketed in soft, shimmering snow, turning everyday landscapes into a serene wonderland. The crisp, frosty air carries a quiet stillness, as if nature herself has paused to rest. Trees stand gracefully adorned with sparkling frost, and the evenings glow warmly with the soft light of fireplaces and twinkling stars. Winter invites us to slow down, to savor the warmth of togetherness, and to find beauty in its peaceful, icy embrace.",
+    "imageUrl": "https://techeer-picture-bucket.s3.ap-northeast-2.amazonaws.com/backgrounds/b249cb84-8c65-4a15-815f-f7bb1d304cd2.jpg",
+    "isDeleted": false,
+    "isRecreated": 0
+  }
+]
