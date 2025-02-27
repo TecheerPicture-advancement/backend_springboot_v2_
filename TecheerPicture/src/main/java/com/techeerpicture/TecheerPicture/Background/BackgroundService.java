@@ -26,6 +26,7 @@ import java.util.UUID;
 @Service
 public class BackgroundService {
 
+    private final TranslationService translationService;
     private final ImageRepository imageRepository;
     private final PixelcutService pixelcutService;
     private final BackgroundRepository backgroundRepository;
@@ -35,8 +36,9 @@ public class BackgroundService {
     private final String bucketName = "techeer-picture-bucket";
 
     @Autowired
-    public BackgroundService(ImageRepository imageRepository, PixelcutService pixelcutService,
+    public BackgroundService(TranslationService translationService, ImageRepository imageRepository, PixelcutService pixelcutService,
                              BackgroundRepository backgroundRepository, AmazonS3 amazonS3, JdbcTemplate jdbcTemplate) {
+        this.translationService = translationService;
         this.imageRepository = imageRepository;
         this.pixelcutService = pixelcutService;
         this.backgroundRepository = backgroundRepository;
@@ -57,45 +59,42 @@ public class BackgroundService {
      */
     public Background createAndSaveBackground(BackgroundRequest backgroundRequest) {
         try {
-            // Retrieve image URL
-            String imageUrl = imageRepository.findById(backgroundRequest.getImageId())
-                .map(Image::getImageUrl)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid imageId: " + backgroundRequest.getImageId()));
+            // 🔹 OpenAI 번역 서비스 호출
+            String translatedPrompt = translationService.translateToEnglish(backgroundRequest.getPrompt());
+            logger.info("번역된 Prompt: {}", translatedPrompt);
 
-            // Create PixelcutRequest
+            String imageUrl = imageRepository.findById(backgroundRequest.getImageId())
+                    .map(Image::getImageUrl)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid imageId: " + backgroundRequest.getImageId()));
+
+            // 번역된 prompt를 Pixelcut API에 적용
             PixelcutRequest pixelcutRequest = new PixelcutRequest(
-                backgroundRequest.getImageId(),
-                imageUrl,
-                backgroundRequest.getImageTransform(),
-                backgroundRequest.getScene(),
-                backgroundRequest.getPrompt(),
-                null // Negative prompt
+                    backgroundRequest.getImageId(),
+                    imageUrl,
+                    backgroundRequest.getImageTransform(),
+                    backgroundRequest.getScene(),
+                    translatedPrompt, //  번역된 문장 사용
+                    null
             );
-            logger.info("ImageTransform as JSON: {}", pixelcutRequest.getImageTransform().toJson());
 
             String apiResponse = pixelcutService.callPixelcutAPI(pixelcutRequest);
-            String generatedImageUrl = extractImageUrlFromResponse(apiResponse); // Pixelcut API에서 반환된 이미지 URL
+            String generatedImageUrl = extractImageUrlFromResponse(apiResponse);
 
-            // Pixelcut API에서 받은 이미지 S3 업로드
             String s3ImageUrl = uploadImageToS3(generatedImageUrl);
 
-            // Background 엔티티 저장
+            // 번역된 prompt를 Background 엔티티에 저장
             Background background = new Background();
             background.setImageId(backgroundRequest.getImageId());
-            background.setScale(backgroundRequest.getImageTransform().getScale());
-            background.setXCenter(backgroundRequest.getImageTransform().getXCenter());
-            background.setYCenter(backgroundRequest.getImageTransform().getYCenter());
-            background.setImageUrl(s3ImageUrl); // S3 업로드된 URL 저장
+            background.setImageUrl(s3ImageUrl);
             background.setScene(backgroundRequest.getScene());
-            background.setPrompt(backgroundRequest.getPrompt());
-            background.setType("generate"); // 명시적으로 설정
+            background.setPrompt(translatedPrompt); //  여기서도 저장
 
-            return backgroundRepository.save(background); // DB 저장
-
+            return backgroundRepository.save(background);
         } catch (Exception e) {
             throw new RuntimeException("Error generating background", e);
         }
     }
+
 
     /**
      * Pixelcut API 응답에서 image_url을 추출하는 메서드
