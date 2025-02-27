@@ -8,7 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ImageToVideoRequest {
-
     @NotNull(message = "imageId는 필수 입력값입니다.")
     @Schema(description = "이미지 ID", example = "int")
     private Long imageId;
@@ -17,19 +16,7 @@ public class ImageToVideoRequest {
     @Schema(description = "비디오 생성 프롬프트", example = "string")
     private String prompt;
 
-    public Long getImageId() {
-        return imageId;
-    }
-
-    public void setImageId(Long imageId) {
-        this.imageId = imageId;
-    }
-
-    public String getPrompt() {
-        return prompt;
-    }
-
-    public void setPrompt(String prompt) {
-        this.prompt = prompt;
-    }
+    @Schema(description = "Aspect ratio of the generated video", example = "16:9")
+    private String aspectRatio;
 }
+
