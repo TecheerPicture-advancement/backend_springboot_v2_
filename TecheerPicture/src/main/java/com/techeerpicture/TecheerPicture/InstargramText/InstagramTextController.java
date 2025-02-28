@@ -5,18 +5,19 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.techeerpicture.TecheerPicture.Image.ImageRepository;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Tag(name = "instagram-texts API", description = "인스타 피드 문장 CRUD API")
 @RestController
 @RequestMapping("/api/v1/instagram-texts")
 public class InstagramTextController {
 
-    @Autowired
-    private GPTPidText gptPidText;
+    private static final Logger logger = LoggerFactory.getLogger(InstagramTextController.class);
 
     @Autowired
     private InstagramTextService instagramTextService;
@@ -25,24 +26,40 @@ public class InstagramTextController {
     private InstagramTextRepository instagramTextRepository;
 
     @Autowired
-    private ImageRepository imageRepository;
+    private GPTPidText gptPidText;
 
-    @Operation(summary = "Instagram 피드 문장 생성", description = "입력된 텍스트 프롬프트를 바탕으로 OpenAI API를 사용해 Instagram 광고 문구를 생성하고 저장합니다.")
     @PostMapping
     public ResponseEntity<Map<String, Object>> generateInstagramText(@RequestBody InstagramTextRequest request) {
         Long imageId = request.getImageId();
         String textPrompt = request.getTextPrompt();
 
-        boolean imageExists = imageRepository.existsById(imageId);
-        if (!imageExists) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "code", 400,
-                    "message", "이미지 ID가 존재하지 않습니다.",
-                    "data", Map.of("image_id", imageId)
-            ));
+        RestTemplate restTemplate = new RestTemplate();
+        String mediaUrl = "http://localhost:8080/api/instagram/media";
+        ResponseEntity<List> mediaResponse = restTemplate.getForEntity(mediaUrl, List.class);
+
+        List<Map<String, Object>> mediaList = mediaResponse.getBody();
+        List<String> captions = new ArrayList<>();
+
+        if (mediaList != null) {
+            for (Map<String, Object> media : mediaList) {
+                if (media.containsKey("caption")) {
+                    captions.add((String) media.get("caption"));
+                }
+            }
         }
 
-        String generatedText = gptPidText.generateInstagramText(textPrompt);
+        if (captions.size() > 10) {
+            captions = captions.subList(0, 10); // 리스트 앞에서부터 10개만 가져오기
+        }
+
+        logger.info("Instagram에서 가져온 최신 10개 caption 리스트: {}", captions);
+
+        String captionExamples = String.join("\n", captions);
+        String fullPrompt = "Write an engaging Instagram caption in a similar style to these previous captions:\n" +
+                captionExamples + "\n\nUser Prompt: " + textPrompt;
+
+        String generatedText = gptPidText.analyzeImageAndGenerateText(fullPrompt);
+
         InstagramText instagramText = instagramTextService.saveGeneratedText(imageId, generatedText);
 
         return ResponseEntity.ok(Map.of(
@@ -56,7 +73,8 @@ public class InstagramTextController {
         ));
     }
 
-    @Operation(summary = "Instagram 피드 문장 조회", description = "특정 ID의 Instagram 피드 문장을 조회합니다.")
+
+@Operation(summary = "Instagram 피드 문장 조회", description = "특정 ID의 Instagram 피드 문장을 조회합니다.")
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getInstagramText(@PathVariable Long id) {
         Optional<InstagramText> instagramText = instagramTextRepository.findById(id);
@@ -122,7 +140,7 @@ public class InstagramTextController {
             ));
         }
 
-        instagramTextRepository.deleteById(id); // ✅ 데이터 완전 삭제
+        instagramTextRepository.deleteById(id);
 
         return ResponseEntity.ok(Map.of(
                 "code", 200,

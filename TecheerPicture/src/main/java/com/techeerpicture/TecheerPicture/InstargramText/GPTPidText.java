@@ -4,49 +4,69 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import okhttp3.*;
+import java.io.IOException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 
 @Service
 public class GPTPidText {
-
     @Value("${GPT_API}")
     private String apiKey;
 
-    public String generateInstagramText(String textPrompt) {
-        String apiUrl = "https://api.openai.com/v1/chat/completions";
+    private static final String OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
+    private static final Logger logger = LoggerFactory.getLogger(GPTPidText.class);
 
-        String prompt = String.format(
-                "다음 설명을 바탕으로 Instagram 광고 문장을 작성해주세요:\n'%s'\n\n" +
-                        "문장은 짧고 강렬해야 하며, 해시태그를 포함해야 합니다.\n" +
-                        "예시: '🔥 단 3일간만! 맥북 프로 할인 행사! 지금 바로 득템하세요 💻✨ #맥북프로 #한정특가 #할인행사'",
-                textPrompt
-        );
+    public String analyzeImageAndGenerateText(String fullPrompt) {
+        OkHttpClient client = new OkHttpClient();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        logger.info("OpenAI에 전달될 프롬프트: {}", fullPrompt);
 
         Map<String, Object> requestBody = Map.of(
-                "model", "gpt-3.5-turbo",
+                "model", "gpt-4o",
                 "messages", List.of(
-                        Map.of("role", "system", "content", "You are a social media marketing expert."),
-                        Map.of("role", "user", "content", prompt)
+                        Map.of("role", "system", "content", "Generate an Instagram caption similar in style to the provided examples."),
+                        Map.of("role", "user", "content", fullPrompt)
                 ),
-                "max_tokens", 100,
-                "temperature", 0.8
+                "max_tokens", 100
         );
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + apiKey);
-        headers.set("Content-Type", "application/json");
+        try {
+            String jsonBody = objectMapper.writeValueAsString(requestBody);
+            Request request = new Request.Builder()
+                    .url(OPENAI_API_URL)
+                    .addHeader("Authorization", "Bearer " + apiKey)
+                    .addHeader("Content-Type", "application/json")
+                    .post(RequestBody.create(jsonBody, okhttp3.MediaType.parse("application/json")))
+                    .build();
 
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
-        RestTemplate restTemplate = new RestTemplate();
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new IOException("OpenAI API 호출 실패: " + response.body().string());
+                }
 
-        ResponseEntity<Map> responseEntity = restTemplate.postForEntity(apiUrl, entity, Map.class);
-        Map<String, Object> responseBody = responseEntity.getBody();
+                JsonNode jsonResponse = objectMapper.readTree(response.body().string());
+                JsonNode choices = jsonResponse.get("choices");
 
-        List<Map<String, Object>> choices = (List<Map<String, Object>>) responseBody.get("choices");
-        Map<String, Object> message = (Map<String, Object>) choices.get(0).get("message");
+                if (choices == null || choices.isEmpty()) {
+                    throw new IOException("OpenAI 응답 오류.");
+                }
 
-        return (String) message.get("content");
+                String result = choices.get(0).get("message").get("content").asText();
+
+                logger.info("OpenAI가 생성한 문장: {}", result);
+
+                return result;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Instagram 문장 생성 중 오류 발생", e);
+        }
     }
 }
