@@ -32,7 +32,7 @@ public class GPTService {
    * @param addInformation 추가 정보
    * @return GeneratedTexts 생성된 광고 문구를 담은 객체
    */
-  public GeneratedTexts generateAdTexts(String itemName, String itemConcept, String itemCategory, String addInformation) {
+  public GeneratedTexts generateAdTexts(String itemName, String itemConcept, String itemCategory, String addInformation, String imageUrl) {
     String apiUrl = "https://api.openai.com/v1/chat/completions";
 
     // GPT 요청 프롬프트 작성
@@ -42,6 +42,8 @@ public class GPTService {
             "컨셉: '%s'\n" +
             "카테고리: '%s'\n" +
             "추가 정보: '%s'\n\n" +
+            "이 이미지url 을 분석해주세요. : '%s'\n\n" +
+            "이미지 분위기를 제품 정보에 추가적으로  반영하여 광고 문구를 생성하세요.\n" +
             "각 광고는 메인 문장(maintext)과 서브 문장(servtext)로 구성됩니다.\n" +
             "출력 형식:\n" +
             "- 세트 1:\n" +
@@ -50,12 +52,12 @@ public class GPTService {
             "- 세트 2:\n" +
             "  메인 문장: [maintext2]\n" +
             "  서브 문장: [servtext2]",
-        itemName, itemConcept, itemCategory, addInformation
+        itemName, itemConcept, itemCategory, addInformation,imageUrl
     );
 
     // 요청 본문 생성
     Map<String, Object> requestBody = Map.of(
-        "model", "gpt-3.5-turbo",
+        "model", "gpt-4o",
         "messages", List.of(
             Map.of("role", "system", "content", "You are a helpful assistant."),
             Map.of("role", "user", "content", prompt)
