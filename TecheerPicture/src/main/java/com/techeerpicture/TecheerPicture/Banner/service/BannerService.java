@@ -11,6 +11,7 @@ import com.techeerpicture.TecheerPicture.Banner.entity.Banner;
 import com.techeerpicture.TecheerPicture.Banner.external.GPTService;
 import com.techeerpicture.TecheerPicture.Banner.util.GeneratedTexts;
 
+
 @Service
 public class BannerService {
 
@@ -28,12 +29,15 @@ public class BannerService {
     Image image = imageRepository.findById(request.getImageId())
         .orElseThrow(() -> new RuntimeException("이미지를 찾을 수 없습니다."));
 
+
+    String imageUrl = image.getImageUrl();
     // GPT를 이용해 광고 문구 생성
     GeneratedTexts texts = gptService.generateAdTexts(
         request.getItemName(),
         request.getItemConcept(),
         request.getItemCategory(),
-        request.getAddInformation()
+        request.getAddInformation(),
+        imageUrl
     );
 
     // Banner 객체 생성 및 값 설정
@@ -45,7 +49,7 @@ public class BannerService {
     banner.setItemName(request.getItemName());
     banner.setItemConcept(request.getItemConcept());
     banner.setItemCategory(request.getItemCategory());
-    banner.setPrompt(request.getAddInformation()); // ✅ add_information을 prompt로 저장
+    banner.setPrompt(request.getAddInformation()); //add_information을 prompt로 저장
     banner.setImage(image); // Image 설정
 
     return bannerRepository.save(banner);
@@ -62,12 +66,14 @@ public class BannerService {
       Image image = imageRepository.findById(request.getImageId())
           .orElseThrow(() -> new RuntimeException("이미지를 찾을 수 없습니다."));
 
+      String imageUrl = image.getImageUrl();
       // GPT를 이용해 광고 문구 재생성
       GeneratedTexts texts = gptService.generateAdTexts(
           request.getItemName(),
           request.getItemConcept(),
           request.getItemCategory(),
-          request.getAddInformation()
+          request.getAddInformation(),
+          imageUrl
       );
 
       // Banner 객체 업데이트
@@ -78,7 +84,7 @@ public class BannerService {
       banner.setItemName(request.getItemName());
       banner.setItemConcept(request.getItemConcept());
       banner.setItemCategory(request.getItemCategory());
-      banner.setPrompt(request.getAddInformation()); // ✅ add_information을 prompt로 저장
+      banner.setPrompt(request.getAddInformation()); //add_information을 prompt로 저장
       banner.setImage(image); // Image 업데이트
 
       return bannerRepository.save(banner);
