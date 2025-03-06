@@ -3,6 +3,7 @@ package com.techeerpicture.TecheerPicture.Background;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +12,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true) // JSON에서 인식되지 않는 필드를 무시
+@AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Background {
 
     @Id
@@ -26,14 +28,20 @@ public class Background {
     private String scene;
     private String prompt;
 
-    @JsonProperty("isDeleted") // JSON 필드 "isDeleted"와 매핑
+    @JsonProperty("isDeleted")
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean isDeleted = false;
 
     private Long isRecreated;
 
     @Column(nullable = false)
-    private String type = "generate"; // 기본값 설정
+    private String type = "generate";
+
+    // ✅ 필요한 생성자 추가
+    public Background(Long imageId, String imageUrl) {
+        this.imageId = imageId;
+        this.imageUrl = imageUrl;
+    }
 
     public void setTypeToRemove() {
         this.type = "remove";

@@ -11,9 +11,6 @@ import java.util.List;
 
 @Repository
 public interface BackgroundRepository extends JpaRepository<Background, Long> {
-    // 특정 조건으로 이미지 조회
-    @Query("SELECT b.imageUrl FROM Background b WHERE b.id = :id")
-    Optional<String> findImageUrlById(@Param("id") Long id);
-    List<Background> findByImageId(Long imageId);
-
+    // ✅ Optional<Background>으로 수정하여 orElseGet 사용 가능
+    Optional<Background> findByImageId(Long imageId);
 }
