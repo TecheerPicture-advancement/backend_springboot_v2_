@@ -1,4 +1,4 @@
-package com.techeerpicture.TecheerPicture.config;
+/*package com.techeerpicture.TecheerPicture.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -38,3 +38,4 @@ public class MockDataLoader implements CommandLineRunner {
     }
   }
 }
+*/
