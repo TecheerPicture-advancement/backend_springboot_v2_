@@ -3,7 +3,6 @@ package com.techeerpicture.controller;
 import com.techeerpicture.dto.InstagramRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -21,17 +20,15 @@ import java.util.Map;
 @Tag(name = "Instagram Post Controller", description = "Instagram 컨테이너 생성 및 게시")
 public class InstagramPostController {
 
-  @Value("${IG_ID}")
-  private String igId;
-
-  @Value("${ACCESS_TOKEN}")
-  private String accessToken;
-
   private final RestTemplate restTemplate = new RestTemplate();
 
   @Operation(summary = "Instagram 게시 (단일 및 캐러셀 지원)", description = "이미지 리스트를 받아 컨테이너 생성 후 자동 게시합니다.")
   @PostMapping("/pid")
-  public ResponseEntity<Map<String, Object>> createAndPublishMedia(@RequestBody InstagramRequest request) {
+  public ResponseEntity<Map<String, Object>> createAndPublishMedia(
+      @RequestParam String access_token,
+      @RequestParam String user_id,
+      @RequestBody InstagramRequest request) {
+
     List<String> imageUrls = request.getImageUrls();
     String caption = request.getPID_content();
 
@@ -43,11 +40,11 @@ public class InstagramPostController {
     if (imageUrls.size() == 1) {
       String imageUrl = imageUrls.get(0);
       try {
-        String containerId = createMediaContainer(imageUrl, caption, false);
+        String containerId = createMediaContainer(imageUrl, caption, false, user_id, access_token);
         if (containerId == null) {
           return ResponseEntity.status(500).body(Map.of("error", "미디어 컨테이너 생성 실패"));
         }
-        String mediaId = publishMediaContainer(containerId);
+        String mediaId = publishMediaContainer(containerId, user_id, access_token);
         return ResponseEntity.ok(Map.of("success", "단일 이미지 게시 완료", "mediaId", mediaId));
       } catch (Exception e) {
         e.printStackTrace();
@@ -59,7 +56,7 @@ public class InstagramPostController {
     List<String> containerIds = new ArrayList<>();
     for (String imageUrl : imageUrls) {
       try {
-        String mediaContainerId = createMediaContainer(imageUrl, null, true);
+        String mediaContainerId = createMediaContainer(imageUrl, null, true, user_id, access_token);
         if (mediaContainerId != null) {
           containerIds.add(mediaContainerId);
         }
@@ -76,7 +73,7 @@ public class InstagramPostController {
     // **캐러셀 컨테이너 생성**
     String carouselContainerId;
     try {
-      carouselContainerId = createCarouselContainer(containerIds, caption);
+      carouselContainerId = createCarouselContainer(containerIds, caption, user_id, access_token);
       if (carouselContainerId == null) {
         return ResponseEntity.status(500).body(Map.of("error", "캐러셀 컨테이너 생성 실패"));
       }
@@ -87,7 +84,7 @@ public class InstagramPostController {
 
     // **캐러셀 게시**
     try {
-      String mediaId = publishMediaContainer(carouselContainerId);
+      String mediaId = publishMediaContainer(carouselContainerId, user_id, access_token);
       return ResponseEntity.ok(Map.of("success", "캐러셀 게시 완료", "mediaId", mediaId));
     } catch (Exception e) {
       e.printStackTrace();
@@ -100,8 +97,8 @@ public class InstagramPostController {
    * - 단일 이미지일 경우: caption 포함
    * - 캐러셀 아이템일 경우: is_carousel_item = true 설정
    */
-  private String createMediaContainer(String imageUrl, String caption, boolean isCarouselItem) {
-    String url = "https://graph.instagram.com/v22.0/" + igId + "/media?access_token=" + accessToken;
+  private String createMediaContainer(String imageUrl, String caption, boolean isCarouselItem, String userId, String accessToken) {
+    String url = "https://graph.instagram.com/v22.0/" + userId + "/media?access_token=" + accessToken;
 
     JSONObject requestBody = new JSONObject();
     requestBody.put("image_url", imageUrl);
@@ -125,8 +122,8 @@ public class InstagramPostController {
   /**
    * **캐러셀 컨테이너 생성**
    */
-  private String createCarouselContainer(List<String> containerIds, String caption) {
-    String url = "https://graph.instagram.com/v22.0/" + igId + "/media?access_token=" + accessToken;
+  private String createCarouselContainer(List<String> containerIds, String caption, String userId, String accessToken) {
+    String url = "https://graph.instagram.com/v22.0/" + userId + "/media?access_token=" + accessToken;
 
     JSONObject requestBody = new JSONObject();
     requestBody.put("media_type", "CAROUSEL");
@@ -146,8 +143,8 @@ public class InstagramPostController {
   /**
    * **미디어 컨테이너 게시**
    */
-  private String publishMediaContainer(String containerId) {
-    String url = "https://graph.instagram.com/v22.0/" + igId + "/media_publish?access_token=" + accessToken;
+  private String publishMediaContainer(String containerId, String userId, String accessToken) {
+    String url = "https://graph.instagram.com/v22.0/" + userId + "/media_publish?access_token=" + accessToken;
 
     JSONObject requestBody = new JSONObject();
     requestBody.put("creation_id", containerId);
