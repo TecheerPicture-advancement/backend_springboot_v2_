@@ -1,9 +1,9 @@
 package com.techeerpicture.controller;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.json.JSONObject;
@@ -22,20 +22,18 @@ import java.util.Map;
 @Tag(name = "Instagram API", description = "Instagram 미디어 데이터 제공 API")
 public class InstagramController {
 
-  @Value("${IG_ID}")
-  private String igId;
-
-  @Value("${ACCESS_TOKEN}")
-  private String accessToken;
-
   @Operation(summary = "Instagram 미디어 가져오기", description = "Instagram 계정에서 미디어 데이터를 가져옵니다.")
   @ApiResponses({
       @ApiResponse(responseCode = "200", description = "미디어 데이터를 성공적으로 반환"),
+      @ApiResponse(responseCode = "400", description = "잘못된 요청 (필수 파라미터 누락)"),
       @ApiResponse(responseCode = "500", description = "서버 오류 발생")
   })
   @GetMapping("/media")
-  public ResponseEntity<List<Map<String, Object>>> getInstagramMedia() {
-    String mediaUrl = "https://graph.instagram.com/v22.0/" + igId + "/media?access_token=" + accessToken;
+  public ResponseEntity<List<Map<String, Object>>> getInstagramMedia(
+      @RequestParam String access_token,
+      @RequestParam String user_id) {
+
+    String mediaUrl = "https://graph.instagram.com/v22.0/" + user_id + "/media?access_token=" + access_token;
 
     // API 요청
     RestTemplate restTemplate = new RestTemplate();
@@ -54,7 +52,7 @@ public class InstagramController {
 
       // 각 미디어 객체의 세부 정보를 가져오기 위한 추가 요청
       String mediaDetailsUrl = "https://graph.instagram.com/v22.0/" + mediaId +
-          "?fields=id,media_type,media_url,thumbnail_url,caption,permalink&access_token=" + accessToken;
+          "?fields=id,media_type,media_url,thumbnail_url,caption,permalink&access_token=" + access_token;
 
       String mediaDetailsResponse = restTemplate.getForObject(mediaDetailsUrl, String.class);
       JSONObject mediaDetails = new JSONObject(mediaDetailsResponse);
