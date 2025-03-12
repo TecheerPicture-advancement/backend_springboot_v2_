@@ -5,8 +5,9 @@ import com.techeerpicture.TecheerPicture.Background.Background;
 import com.techeerpicture.TecheerPicture.Background.PixelcutService;
 import com.techeerpicture.TecheerPicture.Background.PixelcutRequest;
 import com.techeerpicture.TecheerPicture.Background.ImageTransform;
-import com.techeerpicture.TecheerPicture.Image.ImageRepository;
-import com.techeerpicture.TecheerPicture.Image.Image;
+import com.techeerpicture.TecheerPicture.Image.entity.Image;
+import com.techeerpicture.TecheerPicture.Image.repository.ImageRepository;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;

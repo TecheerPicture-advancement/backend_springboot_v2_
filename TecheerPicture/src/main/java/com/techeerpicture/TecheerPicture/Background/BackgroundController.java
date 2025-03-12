@@ -2,9 +2,9 @@ package com.techeerpicture.TecheerPicture.Background;
 
 import com.techeerpicture.TecheerPicture.Background.ImageTransform;
 import com.techeerpicture.TecheerPicture.Background.BackgroundResponse;
-import com.techeerpicture.TecheerPicture.Image.ImageService;
-import com.techeerpicture.TecheerPicture.Image.ImageRepository;
-import com.techeerpicture.TecheerPicture.Image.Image;
+import com.techeerpicture.TecheerPicture.Image.entity.Image;
+import com.techeerpicture.TecheerPicture.Image.repository.ImageRepository;
+import com.techeerpicture.TecheerPicture.Image.service.ImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;

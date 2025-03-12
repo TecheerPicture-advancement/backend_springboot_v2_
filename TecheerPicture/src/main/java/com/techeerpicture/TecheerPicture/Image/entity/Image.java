@@ -1,4 +1,4 @@
-package com.techeerpicture.TecheerPicture.Image;
+package com.techeerpicture.TecheerPicture.Image.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -28,10 +28,6 @@ public class Image {
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
-
-    public String getImageUrl() {
-        return this.imageUrl;
-    }
 
     @PreUpdate
     protected void onUpdate() {

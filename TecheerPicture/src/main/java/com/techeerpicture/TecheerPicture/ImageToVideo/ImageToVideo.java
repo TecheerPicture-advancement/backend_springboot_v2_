@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDateTime;
-import com.techeerpicture.TecheerPicture.Image.Image;
+import com.techeerpicture.TecheerPicture.Image.entity.Image;
 
 
 @Entity

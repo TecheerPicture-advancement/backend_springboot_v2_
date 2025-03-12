@@ -1,15 +1,18 @@
-package com.techeerpicture.TecheerPicture.Image;
+package com.techeerpicture.TecheerPicture.Image.controller;
 
-import java.io.IOException;
+import com.techeerpicture.TecheerPicture.Image.entity.Image;
+import com.techeerpicture.TecheerPicture.Image.service.ImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
-import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+
+import java.io.IOException;
 
 @Tag(name = "Image API", description = "이미지 업로드 API")
 @RestController
@@ -23,16 +26,9 @@ public class ImageController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadAndSaveImage(@RequestParam("file") MultipartFile file) {
         try {
-            // S3에 이미지 업로드
             String uploadedImageUrl = imageService.uploadImage(file);
-
-            // 업로드된 URL을 DB에 저장하고, 저장된 이미지 ID를 반환
             Image savedImage = imageService.saveImage(uploadedImageUrl);
-            Long imageId = savedImage.getId(); // 저장된 이미지 ID 가져오기
-
-            return ResponseEntity.ok("이미지가 업로드 중입니다. 업로드가 완료되면 URL이 업데이트 됩니다: " +
-                uploadedImageUrl + "\n이미지 ID: " + imageId);
-
+            return ResponseEntity.ok("이미지가 업로드되었습니다. URL: " + uploadedImageUrl + ", 이미지 ID: " + savedImage.getId());
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("이미지 업로드 실패: " + e.getMessage());
@@ -43,9 +39,6 @@ public class ImageController {
     @GetMapping("/{imageId}")
     public ResponseEntity<Image> getImage(@PathVariable("imageId") Long imageId) {
         Image image = imageService.getImageById(imageId);
-        if (image == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
         return ResponseEntity.ok(image);
     }
 
@@ -53,32 +46,13 @@ public class ImageController {
     @DeleteMapping("/{imageId}")
     public ResponseEntity<String> deleteImage(@PathVariable("imageId") Long imageId) {
         try {
-            // DB에서 이미지 정보 가져오기
             Image image = imageService.getImageById(imageId);
-            if (image == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("이미지를 찾을 수 없습니다: ID = " + imageId);
-            }
-
-            // S3에서 이미지 삭제
             imageService.deleteImageFromS3(image.getImageUrl());
-
-            // DB에서 이미지 정보 삭제
             imageService.deleteImageById(imageId);
-
-            return ResponseEntity.ok("이미지가 성공적으로 삭제되었습니다.");
+            return ResponseEntity.ok("이미지가 삭제되었습니다.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("이미지 삭제 실패: " + e.getMessage());
-        }
-    }
-
-    @ControllerAdvice
-    public static class GlobalExceptionHandler {
-
-        @ExceptionHandler(MaxUploadSizeExceededException.class)
-        public ResponseEntity<String> handleMaxUploadSizeExceeded(MaxUploadSizeExceededException e) {
-            return ResponseEntity.badRequest().body("업로드된 파일 크기가 서버 허용 최대 크기를 초과했습니다.");
         }
     }
 }

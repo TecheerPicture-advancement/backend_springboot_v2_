@@ -1,4 +1,4 @@
-package com.techeerpicture.TecheerPicture.Image;
+package com.techeerpicture.TecheerPicture.Image.external;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +10,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
 @Configuration
 public class ImageConfig {
+
     @Value("${AWS_S3_ACCESSKEY}")
     private String accessKey;
 
