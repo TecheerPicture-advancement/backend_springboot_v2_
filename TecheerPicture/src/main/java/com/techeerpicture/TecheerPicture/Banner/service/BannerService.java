@@ -2,8 +2,8 @@ package com.techeerpicture.TecheerPicture.Banner.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.techeerpicture.TecheerPicture.Image.Image;
-import com.techeerpicture.TecheerPicture.Image.ImageRepository;
+import com.techeerpicture.TecheerPicture.Image.entity.Image;
+import com.techeerpicture.TecheerPicture.Image.repository.ImageRepository;
 
 import com.techeerpicture.TecheerPicture.Banner.repository.BannerRepository;
 import com.techeerpicture.TecheerPicture.Banner.dto.BannerRequest;
