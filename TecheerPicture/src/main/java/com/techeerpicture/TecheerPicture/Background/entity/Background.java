@@ -1,5 +1,6 @@
-package com.techeerpicture.TecheerPicture.Background;
+package com.techeerpicture.TecheerPicture.Background.entity;
 
+import com.techeerpicture.TecheerPicture.Background.entity.Background;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;

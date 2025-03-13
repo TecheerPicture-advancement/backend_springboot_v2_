@@ -7,7 +7,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.google.gson.JsonObject;
 import com.techeerpicture.TecheerPicture.Image.entity.Image;
 import com.techeerpicture.TecheerPicture.Image.repository.ImageRepository;
-import com.techeerpicture.TecheerPicture.Background.TranslationService;
+import com.techeerpicture.TecheerPicture.Background.service.TranslationService;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.slf4j.Logger;

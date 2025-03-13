@@ -1,5 +1,6 @@
-package com.techeerpicture.TecheerPicture.Background;
+package com.techeerpicture.TecheerPicture.Background.repository;
 
+import com.techeerpicture.TecheerPicture.Background.entity.Background; //추가한 내용
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;

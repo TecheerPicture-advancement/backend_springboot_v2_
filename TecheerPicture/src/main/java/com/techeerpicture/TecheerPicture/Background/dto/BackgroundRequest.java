@@ -1,8 +1,8 @@
-package com.techeerpicture.TecheerPicture.Background;
+package com.techeerpicture.TecheerPicture.Background.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import com.techeerpicture.TecheerPicture.Background.ImageTransform;
+import com.techeerpicture.TecheerPicture.Background.entity.ImageTransform;
 
 public class BackgroundRequest {
 

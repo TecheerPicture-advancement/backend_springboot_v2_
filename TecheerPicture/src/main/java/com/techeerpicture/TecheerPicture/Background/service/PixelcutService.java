@@ -1,8 +1,9 @@
-package com.techeerpicture.TecheerPicture.Background;
+package com.techeerpicture.TecheerPicture.Background.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.techeerpicture.TecheerPicture.Background.BackgroundRequest;
-import com.techeerpicture.TecheerPicture.Background.PixelcutRequest;
+import com.techeerpicture.TecheerPicture.Background.dto.BackgroundRequest;
+import com.techeerpicture.TecheerPicture.Background.dto.PixelcutRequest;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import okhttp3.*;

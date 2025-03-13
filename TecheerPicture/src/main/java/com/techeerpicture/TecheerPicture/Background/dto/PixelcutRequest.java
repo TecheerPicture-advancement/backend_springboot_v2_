@@ -1,6 +1,7 @@
-package com.techeerpicture.TecheerPicture.Background;
+package com.techeerpicture.TecheerPicture.Background.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.techeerpicture.TecheerPicture.Background.entity.ImageTransform;
 
 public class PixelcutRequest {
     @JsonProperty("image_id") // JSON 키 이름을 API 요구사항에 맞게 설정

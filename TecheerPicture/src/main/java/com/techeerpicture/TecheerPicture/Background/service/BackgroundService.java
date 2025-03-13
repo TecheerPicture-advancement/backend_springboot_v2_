@@ -1,21 +1,28 @@
-package com.techeerpicture.TecheerPicture.Background;
+package com.techeerpicture.TecheerPicture.Background.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.techeerpicture.TecheerPicture.Background.PixelcutService;
-import com.techeerpicture.TecheerPicture.Background.Background;
-import com.techeerpicture.TecheerPicture.Background.BackgroundRepository;
+
+import com.techeerpicture.TecheerPicture.Background.dto.BackgroundRequest;
+import com.techeerpicture.TecheerPicture.Background.entity.Background;
+import com.techeerpicture.TecheerPicture.Background.repository.BackgroundRepository;
+import com.techeerpicture.TecheerPicture.Background.service.PixelcutService;
+import com.techeerpicture.TecheerPicture.Background.dto.PixelcutRequest;
+
 import com.techeerpicture.TecheerPicture.Image.entity.Image;
 import com.techeerpicture.TecheerPicture.Image.repository.ImageRepository;
+
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import java.net.MalformedURLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.net.MalformedURLException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -185,7 +192,4 @@ public class BackgroundService {
             throw new RuntimeException("S3 이미지 삭제 실패", e);
         }
     }
-
-
-
 }

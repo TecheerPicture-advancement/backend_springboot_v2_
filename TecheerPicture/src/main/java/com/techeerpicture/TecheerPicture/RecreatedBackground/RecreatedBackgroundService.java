@@ -1,10 +1,10 @@
 package com.techeerpicture.TecheerPicture.RecreatedBackground;
 
-import com.techeerpicture.TecheerPicture.Background.BackgroundRepository;
-import com.techeerpicture.TecheerPicture.Background.Background;
-import com.techeerpicture.TecheerPicture.Background.PixelcutService;
-import com.techeerpicture.TecheerPicture.Background.PixelcutRequest;
-import com.techeerpicture.TecheerPicture.Background.ImageTransform;
+import com.techeerpicture.TecheerPicture.Background.repository.BackgroundRepository;
+import com.techeerpicture.TecheerPicture.Background.entity.Background;
+import com.techeerpicture.TecheerPicture.Background.service.PixelcutService;
+import com.techeerpicture.TecheerPicture.Background.dto.PixelcutRequest;
+import com.techeerpicture.TecheerPicture.Background.entity.ImageTransform;
 import com.techeerpicture.TecheerPicture.Image.entity.Image;
 import com.techeerpicture.TecheerPicture.Image.repository.ImageRepository;
 

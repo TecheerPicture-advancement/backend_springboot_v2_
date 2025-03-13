@@ -1,7 +1,10 @@
-package com.techeerpicture.TecheerPicture.Background;
+package com.techeerpicture.TecheerPicture.Background.controller;
 
-import com.techeerpicture.TecheerPicture.Background.ImageTransform;
-import com.techeerpicture.TecheerPicture.Background.BackgroundResponse;
+import com.techeerpicture.TecheerPicture.Background.dto.BackgroundRequest;
+import com.techeerpicture.TecheerPicture.Background.entity.Background;
+import com.techeerpicture.TecheerPicture.Background.entity.ImageTransform;
+import com.techeerpicture.TecheerPicture.Background.dto.BackgroundResponse;
+import com.techeerpicture.TecheerPicture.Background.service.BackgroundService;
 import com.techeerpicture.TecheerPicture.Image.entity.Image;
 import com.techeerpicture.TecheerPicture.Image.repository.ImageRepository;
 import com.techeerpicture.TecheerPicture.Image.service.ImageService;

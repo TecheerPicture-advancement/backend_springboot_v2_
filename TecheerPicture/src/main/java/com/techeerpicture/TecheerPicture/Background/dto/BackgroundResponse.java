@@ -1,4 +1,4 @@
-package com.techeerpicture.TecheerPicture.Background;
+package com.techeerpicture.TecheerPicture.Background.dto;
 
 public class BackgroundResponse {
     private Long id;

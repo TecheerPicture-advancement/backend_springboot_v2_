@@ -2,8 +2,8 @@ package com.techeerpicture.TecheerPicture.RemoveBackground.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.techeerpicture.TecheerPicture.Background.Background;
-import com.techeerpicture.TecheerPicture.Background.BackgroundRepository;
+import com.techeerpicture.TecheerPicture.Background.entity.Background;
+import com.techeerpicture.TecheerPicture.Background.repository.BackgroundRepository;
 import com.techeerpicture.TecheerPicture.Image.entity.Image;
 import com.techeerpicture.TecheerPicture.Image.repository.ImageRepository;
 
