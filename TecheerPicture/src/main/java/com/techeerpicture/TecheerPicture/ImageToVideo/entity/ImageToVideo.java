@@ -1,4 +1,4 @@
-package com.techeerpicture.TecheerPicture.ImageToVideo;
+package com.techeerpicture.TecheerPicture.ImageToVideo.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

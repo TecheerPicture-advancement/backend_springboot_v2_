@@ -1,4 +1,4 @@
-package com.techeerpicture.TecheerPicture.ImageToVideo;
+package com.techeerpicture.TecheerPicture.ImageToVideo.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

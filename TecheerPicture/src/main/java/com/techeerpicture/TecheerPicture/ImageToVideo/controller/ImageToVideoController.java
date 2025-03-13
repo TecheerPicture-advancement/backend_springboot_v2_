@@ -1,5 +1,8 @@
-package com.techeerpicture.TecheerPicture.ImageToVideo;
+package com.techeerpicture.TecheerPicture.ImageToVideo.controller;
 
+import com.techeerpicture.TecheerPicture.ImageToVideo.service.ImageToVideoService;
+import com.techeerpicture.TecheerPicture.ImageToVideo.dto.ImageToVideoRequest;
+import com.techeerpicture.TecheerPicture.ImageToVideo.dto.ImageToVideoResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
