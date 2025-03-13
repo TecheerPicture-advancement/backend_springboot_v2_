@@ -1,4 +1,7 @@
-package com.techeerpicture.TecheerPicture.Instagram;
+package com.techeerpicture.TecheerPicture.Instagram.service;
+
+import com.techeerpicture.TecheerPicture.Instagram.dto.InstagramRequest;
+import com.techeerpicture.TecheerPicture.Instagram.dto.InstagramTokenRequest;
 
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;

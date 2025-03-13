@@ -1,4 +1,4 @@
-package com.techeerpicture.TecheerPicture.Instagram;
+package com.techeerpicture.TecheerPicture.Instagram.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;

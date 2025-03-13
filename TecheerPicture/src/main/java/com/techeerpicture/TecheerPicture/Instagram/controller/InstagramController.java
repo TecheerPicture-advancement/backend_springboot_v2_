@@ -1,4 +1,4 @@
-package com.techeerpicture.controller;
+package com.techeerpicture.TecheerPicture.Instagram.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

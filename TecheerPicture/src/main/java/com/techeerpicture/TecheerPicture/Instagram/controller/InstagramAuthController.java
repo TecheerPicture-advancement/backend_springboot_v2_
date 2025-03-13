@@ -1,4 +1,7 @@
-package com.techeerpicture.TecheerPicture.Instagram;
+package com.techeerpicture.TecheerPicture.Instagram.controller;
+
+import com.techeerpicture.TecheerPicture.Instagram.dto.InstagramTokenRequest;
+import com.techeerpicture.TecheerPicture.Instagram.service.InstagramAuthService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

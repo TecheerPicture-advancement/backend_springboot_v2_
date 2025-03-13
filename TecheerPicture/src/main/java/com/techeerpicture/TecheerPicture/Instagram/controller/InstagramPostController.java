@@ -1,6 +1,7 @@
-package com.techeerpicture.controller;
+package com.techeerpicture.TecheerPicture.Instagram.controller;
 
-import com.techeerpicture.dto.InstagramRequest;
+import com.techeerpicture.TecheerPicture.Instagram.dto.InstagramRequest;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpEntity;

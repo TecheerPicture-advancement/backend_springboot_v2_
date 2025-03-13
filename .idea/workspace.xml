@@ -6,12 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="b1109849-9cf2-4ee7-ac59-37ee5cf21a8e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/ImageToVideo/ImageToVideo.java" beforeDir="false" afterPath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/ImageToVideo/entity/ImageToVideo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/ImageToVideo/ImageToVideoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/ImageToVideo/controller/ImageToVideoController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/ImageToVideo/ImageToVideoRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/ImageToVideo/repository/ImageToVideoRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/ImageToVideo/ImageToVideoRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/ImageToVideo/dto/ImageToVideoRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/ImageToVideo/ImageToVideoResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/ImageToVideo/dto/ImageToVideoResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/ImageToVideo/ImageToVideoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/ImageToVideo/service/ImageToVideoService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/Instagram/InstagramAuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/Instagram/controller/InstagramAuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/Instagram/InstagramAuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/Instagram/service/InstagramAuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/Instagram/InstagramController.java" beforeDir="false" afterPath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/Instagram/controller/InstagramController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/Instagram/InstagramPostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/Instagram/controller/InstagramPostController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/Instagram/InstagramRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/Instagram/dto/InstagramRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/Instagram/InstagramTokenRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/Instagram/dto/InstagramTokenRequest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,11 +47,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\SonSeokYoung\SSY_coder\backend_springboot_v2_\TecheerPicture\src\main\java\com\techeerpicture\TecheerPicture\Instagram\dto" />
+      <recent name="C:\Users\SonSeokYoung\SSY_coder\backend_springboot_v2_\TecheerPicture\src\main\java\com\techeerpicture\TecheerPicture\Instagram\service" />
+      <recent name="C:\Users\SonSeokYoung\SSY_coder\backend_springboot_v2_\TecheerPicture\src\main\java\com\techeerpicture\TecheerPicture\Instagram\controller" />
       <recent name="C:\Users\SonSeokYoung\SSY_coder\backend_springboot_v2_\TecheerPicture\src\main\java\com\techeerpicture\TecheerPicture\ImageToVideo\entity" />
       <recent name="C:\Users\SonSeokYoung\SSY_coder\backend_springboot_v2_\TecheerPicture\src\main\java\com\techeerpicture\TecheerPicture\ImageToVideo\dto" />
-      <recent name="C:\Users\SonSeokYoung\SSY_coder\backend_springboot_v2_\TecheerPicture\src\main\java\com\techeerpicture\TecheerPicture\ImageToVideo\service" />
-      <recent name="C:\Users\SonSeokYoung\SSY_coder\backend_springboot_v2_\TecheerPicture\src\main\java\com\techeerpicture\TecheerPicture\ImageToVideo\repository" />
-      <recent name="C:\Users\SonSeokYoung\SSY_coder\backend_springboot_v2_\TecheerPicture\src\main\java\com\techeerpicture\TecheerPicture\ImageToVideo\controller" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -64,7 +64,8 @@
       <updated>1741744241214</updated>
       <workItem from="1741744242586" duration="2480000" />
       <workItem from="1741870640408" duration="4338000" />
-      <workItem from="1741880483612" duration="5563000" />
+      <workItem from="1741880483612" duration="6846000" />
+      <workItem from="1741888211686" duration="294000" />
     </task>
     <servers />
   </component>
