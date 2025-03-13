@@ -5,14 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b1109849-9cf2-4ee7-ac59-37ee5cf21a8e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/InstargramText/GPTPidText.java" beforeDir="false" afterPath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/InstagramText/service/GPTPidText.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/InstargramText/InstagramText.java" beforeDir="false" afterPath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/InstagramText/entity/InstagramText.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/InstargramText/InstagramTextController.java" beforeDir="false" afterPath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/InstagramText/controller/InstagramTextController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/InstargramText/InstagramTextRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/InstagramText/repository/InstagramTextRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/InstargramText/InstagramTextRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/InstagramText/dto/InstagramTextRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/InstargramText/InstagramTextResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/InstagramText/dto/InstagramTextResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/InstargramText/InstagramTextService.java" beforeDir="false" afterPath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/InstagramText/service/InstagramTextService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/RecreatedBackground/RecreatedBackground.java" beforeDir="false" afterPath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/RecreatedBackground/entity/RecreatedBackground.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/RecreatedBackground/RecreatedBackgroundController.java" beforeDir="false" afterPath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/RecreatedBackground/controller/RecreatedBackgroundController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/RecreatedBackground/RecreatedBackgroundService.java" beforeDir="false" afterPath="$PROJECT_DIR$/TecheerPicture/src/main/java/com/techeerpicture/TecheerPicture/RecreatedBackground/service/RecreatedBackgroundService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,11 +43,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\SonSeokYoung\SSY_coder\backend_springboot_v2_\TecheerPicture\src\main\java\com\techeerpicture\TecheerPicture\RecreatedBackground\service" />
+      <recent name="C:\Users\SonSeokYoung\SSY_coder\backend_springboot_v2_\TecheerPicture\src\main\java\com\techeerpicture\TecheerPicture\RecreatedBackground\controller" />
+      <recent name="C:\Users\SonSeokYoung\SSY_coder\backend_springboot_v2_\TecheerPicture\src\main\java\com\techeerpicture\TecheerPicture\RecreatedBackground\entity" />
       <recent name="C:\Users\SonSeokYoung\SSY_coder\backend_springboot_v2_\TecheerPicture\src\main\java\com\techeerpicture\TecheerPicture\InstargramText\service" />
       <recent name="C:\Users\SonSeokYoung\SSY_coder\backend_springboot_v2_\TecheerPicture\src\main\java\com\techeerpicture\TecheerPicture\InstargramText\dto" />
-      <recent name="C:\Users\SonSeokYoung\SSY_coder\backend_springboot_v2_\TecheerPicture\src\main\java\com\techeerpicture\TecheerPicture\InstargramText\repository" />
-      <recent name="C:\Users\SonSeokYoung\SSY_coder\backend_springboot_v2_\TecheerPicture\src\main\java\com\techeerpicture\TecheerPicture\InstargramText\controller" />
-      <recent name="C:\Users\SonSeokYoung\SSY_coder\backend_springboot_v2_\TecheerPicture\src\main\java\com\techeerpicture\TecheerPicture\InstargramText\entity" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -66,7 +61,7 @@
       <workItem from="1741744242586" duration="2480000" />
       <workItem from="1741870640408" duration="4338000" />
       <workItem from="1741880483612" duration="6846000" />
-      <workItem from="1741888211686" duration="1787000" />
+      <workItem from="1741888211686" duration="2103000" />
     </task>
     <servers />
   </component>

@@ -1,4 +1,4 @@
-package com.techeerpicture.TecheerPicture.RecreatedBackground;
+package com.techeerpicture.TecheerPicture.RecreatedBackground.service;
 
 import com.techeerpicture.TecheerPicture.Background.repository.BackgroundRepository;
 import com.techeerpicture.TecheerPicture.Background.entity.Background;

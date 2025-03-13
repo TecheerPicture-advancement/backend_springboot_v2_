@@ -1,4 +1,6 @@
-package com.techeerpicture.TecheerPicture.RecreatedBackground;
+package com.techeerpicture.TecheerPicture.RecreatedBackground.controller;
+
+import com.techeerpicture.TecheerPicture.RecreatedBackground.service.RecreatedBackgroundService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import com.techeerpicture.TecheerPicture.Background.entity.Background;
