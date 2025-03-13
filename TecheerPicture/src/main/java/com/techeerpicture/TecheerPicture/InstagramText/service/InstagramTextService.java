@@ -1,4 +1,7 @@
-package com.techeerpicture.TecheerPicture.instagramtext;
+package com.techeerpicture.TecheerPicture.InstagramText.service;
+
+import com.techeerpicture.TecheerPicture.InstagramText.repository.InstagramTextRepository;
+import com.techeerpicture.TecheerPicture.InstagramText.entity.InstagramText;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

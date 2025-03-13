@@ -1,4 +1,4 @@
-package com.techeerpicture.TecheerPicture.instagramtext;
+package com.techeerpicture.TecheerPicture.InstagramText.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.techeerpicture.TecheerPicture.instagramtext;
+package com.techeerpicture.TecheerPicture.InstagramText.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;

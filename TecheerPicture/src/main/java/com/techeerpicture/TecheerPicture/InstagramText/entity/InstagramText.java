@@ -1,4 +1,4 @@
-package com.techeerpicture.TecheerPicture.instagramtext;
+package com.techeerpicture.TecheerPicture.InstagramText.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

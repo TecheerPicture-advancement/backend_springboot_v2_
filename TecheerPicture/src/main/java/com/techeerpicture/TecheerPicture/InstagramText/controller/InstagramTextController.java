@@ -1,4 +1,11 @@
-package com.techeerpicture.TecheerPicture.instagramtext;
+package com.techeerpicture.TecheerPicture.InstagramText.controller;
+
+import com.techeerpicture.TecheerPicture.InstagramText.entity.InstagramText;
+import com.techeerpicture.TecheerPicture.InstagramText.service.GPTPidText;
+import com.techeerpicture.TecheerPicture.InstagramText.service.InstagramTextService;
+import com.techeerpicture.TecheerPicture.InstagramText.repository.InstagramTextRepository;
+import com.techeerpicture.TecheerPicture.InstagramText.dto.InstagramTextRequest;
+import com.techeerpicture.TecheerPicture.InstagramText.dto.InstagramTextResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
