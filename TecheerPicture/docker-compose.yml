@@ -13,7 +13,7 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
-    healthcheck: # MySQL 초기화 검사 추가
+    healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
@@ -22,7 +22,7 @@ services:
   flyway:
     image: flyway/flyway:11.0.0
     container_name: flyway-migration
-    depends_on: # MySQL 초기화 후 Flyway 실행
+    depends_on:
       db:
         condition: service_healthy
     environment:
@@ -40,17 +40,34 @@ services:
     env_file: .env
     ports:
       - "8080:8080"
-    depends_on: # Flyway 마이그레이션 후 실행
-      - db
-      - flyway
+    depends_on:
+      db:
+        condition: service_healthy
+      flyway:
+        condition: service_completed_successfully
     environment:
       - SPRING_SERVLET_MULTIPART_ENABLED=true
       - SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE=1000MB
       - SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE=1000MB
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  k6:
+    image: grafana/k6
+    container_name: k6-load-test
+    volumes:
+      - ./k6-test.js:/k6-test.js
+    command: ["run", "/k6-test.js"]
+    depends_on:
+      backend:
+        condition: service_healthy
 
 volumes:
   db_data:
 
 networks:
   default:
-    name: techeer-network # 명시적인 네트워크 이름 설정
+    name: techeer-network
