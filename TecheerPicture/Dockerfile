@@ -20,6 +20,9 @@ RUN ./gradlew bootJar
 # 실행 단계
 FROM openjdk:17-jdk-slim
 
+#curl설치
+RUN apt-get update && apt-get install -y curl
+
 # 작업 디렉토리 설정
 WORKDIR /app
 

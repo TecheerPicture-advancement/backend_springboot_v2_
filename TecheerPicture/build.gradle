@@ -56,6 +56,7 @@ dependencies {
 	implementation 'org.json:json:20210307'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'com.squareup.okhttp3:okhttp:4.11.0' //외부 API 호출 OkHttp 사용
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 tasks.named('test') {
