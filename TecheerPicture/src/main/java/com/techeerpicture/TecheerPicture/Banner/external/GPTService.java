@@ -1,5 +1,6 @@
 package com.techeerpicture.TecheerPicture.Banner.external;
 
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -9,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import com.techeerpicture.TecheerPicture.Banner.util.GeneratedTexts;
 /**
@@ -102,7 +104,14 @@ public class GPTService {
       throw new RuntimeException("GPT 호출 실패: " + e.getMessage(), e);
     }
   }
-
+  @Async
+  public CompletableFuture<GeneratedTexts> generateAdTextsAsync(
+      String itemName, String itemConcept, String itemCategory,
+      String addInformation, String imageUrl
+  ) {
+    GeneratedTexts texts = generateAdTexts(itemName, itemConcept, itemCategory, addInformation, imageUrl);
+    return CompletableFuture.completedFuture(texts);
+  }
   /**
    * 생성된 텍스트를 파싱하여 광고 문구를 추출하는 메서드
    *

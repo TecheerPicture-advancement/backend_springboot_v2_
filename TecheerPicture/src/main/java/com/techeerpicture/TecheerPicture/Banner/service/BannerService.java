@@ -12,6 +12,9 @@ import com.techeerpicture.TecheerPicture.Banner.entity.Banner;
 import com.techeerpicture.TecheerPicture.Banner.external.GPTService;
 import com.techeerpicture.TecheerPicture.Banner.util.GeneratedTexts;
 
+import java.util.concurrent.CompletableFuture;
+
+
 @Service
 public class BannerService {
 
@@ -25,19 +28,20 @@ public class BannerService {
   private ImageRepository imageRepository;
 
   public Banner createBanner(BannerRequest request) {
-    // 엔티티 전체를 조건 걸어 가져옴 (isDeleted = false)
-    Image image = imageRepository.findActiveImageById(request.getImageId())
-        .orElseThrow(() -> new RuntimeException("이미지를 찾을 수 없습니다."));
 
-    String imageUrl = image.getImageUrl();
+    // isDeleted = false 조건으로 Image 조회
+Image image = imageRepository.findActiveImageById(request.getImageId())
+    .orElseThrow(() -> new RuntimeException("이미지를 찾을 수 없습니다."));
+String imageUrl = image.getImageUrl();
 
-    GeneratedTexts texts = gptService.generateAdTexts(
-        request.getItemName(),
-        request.getItemConcept(),
-        request.getItemCategory(),
-        request.getAddInformation(),
-        imageUrl
-    );
+// 비동기 GPT 호출
+CompletableFuture<GeneratedTexts> futureTexts = gptService.generateAdTextsAsync(
+    request.getItemName(), request.getItemConcept(), request.getItemCategory(),
+    request.getAddInformation(), imageUrl
+);
+
+// 결과 대기
+GeneratedTexts texts = futureTexts.join();
 
     Banner banner = new Banner();
     banner.setMainText1(texts.getMainText1());
@@ -48,6 +52,7 @@ public class BannerService {
     banner.setItemConcept(request.getItemConcept());
     banner.setItemCategory(request.getItemCategory());
     banner.setPrompt(request.getAddInformation());
+
     banner.setImage(image); // 관계 주입
 
     return bannerRepository.save(banner);
@@ -61,18 +66,20 @@ public class BannerService {
 
   public Banner updateBanner(Long bannerId, BannerRequest request) {
     return bannerRepository.findById(bannerId).map(banner -> {
-      Image image = imageRepository.findActiveImageById(request.getImageId())
-          .orElseThrow(() -> new RuntimeException("이미지를 찾을 수 없습니다."));
 
+      Image image = imageRepository.findActiveImageById(request.getImageId())
+
+          .orElseThrow(() -> new RuntimeException("이미지를 찾을 수 없습니다."));
       String imageUrl = image.getImageUrl();
 
-      GeneratedTexts texts = gptService.generateAdTexts(
-          request.getItemName(),
-          request.getItemConcept(),
-          request.getItemCategory(),
-          request.getAddInformation(),
-          imageUrl
+
+      CompletableFuture<GeneratedTexts> futureTexts = gptService.generateAdTextsAsync(
+          request.getItemName(), request.getItemConcept(), request.getItemCategory(),
+          request.getAddInformation(), imageUrl
       );
+
+      GeneratedTexts texts = futureTexts.join();
+
 
       banner.setMainText1(texts.getMainText1());
       banner.setServText1(texts.getServText1());
@@ -82,11 +89,13 @@ public class BannerService {
       banner.setItemConcept(request.getItemConcept());
       banner.setItemCategory(request.getItemCategory());
       banner.setPrompt(request.getAddInformation());
+
       banner.setImage(image); // 업데이트도 동일
 
       return bannerRepository.save(banner);
     }).orElseThrow(() -> new RuntimeException("배너를 찾을 수 없습니다."));
   }
+
 
   public void deleteBanner(Long bannerId) {
     Banner banner = bannerRepository.findById(bannerId)
