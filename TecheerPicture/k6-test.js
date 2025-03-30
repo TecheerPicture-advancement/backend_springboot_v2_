@@ -23,7 +23,7 @@ function testBannerAPI() {
         itemConcept: "촉촉한",
         itemCategory: "화장품",
         addInformation: "3일간만 진행되는 이벤트",
-        imageId: 1
+        imageId: 2
     });
 
     let params = {

@@ -64,7 +64,7 @@ public class GPTService {
             Map.of("role", "system", "content", "You are a helpful assistant."),
             Map.of("role", "user", "content", prompt)
         ),
-        "max_tokens", 50,
+        "max_tokens", 200,
         "temperature", 0.7
     );
 
