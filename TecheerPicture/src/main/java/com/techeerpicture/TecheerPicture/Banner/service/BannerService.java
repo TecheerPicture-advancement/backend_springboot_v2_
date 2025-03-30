@@ -2,15 +2,15 @@ package com.techeerpicture.TecheerPicture.Banner.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.techeerpicture.TecheerPicture.Image.entity.Image;
 import com.techeerpicture.TecheerPicture.Image.repository.ImageRepository;
-
 import com.techeerpicture.TecheerPicture.Banner.repository.BannerRepository;
 import com.techeerpicture.TecheerPicture.Banner.dto.BannerRequest;
 import com.techeerpicture.TecheerPicture.Banner.entity.Banner;
 import com.techeerpicture.TecheerPicture.Banner.external.GPTService;
 import com.techeerpicture.TecheerPicture.Banner.util.GeneratedTexts;
-
 
 @Service
 public class BannerService {
@@ -19,19 +19,18 @@ public class BannerService {
   private BannerRepository bannerRepository;
 
   @Autowired
-  private GPTService gptService; // GPTService 주입
+  private GPTService gptService;
 
   @Autowired
-  private ImageRepository imageRepository; // ImageRepository 주입
+  private ImageRepository imageRepository;
 
   public Banner createBanner(BannerRequest request) {
-    // Image 엔티티 조회
-    Image image = imageRepository.findById(request.getImageId())
+    // 엔티티 전체를 조건 걸어 가져옴 (isDeleted = false)
+    Image image = imageRepository.findActiveImageById(request.getImageId())
         .orElseThrow(() -> new RuntimeException("이미지를 찾을 수 없습니다."));
 
-
     String imageUrl = image.getImageUrl();
-    // GPT를 이용해 광고 문구 생성
+
     GeneratedTexts texts = gptService.generateAdTexts(
         request.getItemName(),
         request.getItemConcept(),
@@ -40,7 +39,6 @@ public class BannerService {
         imageUrl
     );
 
-    // Banner 객체 생성 및 값 설정
     Banner banner = new Banner();
     banner.setMainText1(texts.getMainText1());
     banner.setServText1(texts.getServText1());
@@ -49,12 +47,13 @@ public class BannerService {
     banner.setItemName(request.getItemName());
     banner.setItemConcept(request.getItemConcept());
     banner.setItemCategory(request.getItemCategory());
-    banner.setPrompt(request.getAddInformation()); //add_information을 prompt로 저장
-    banner.setImage(image); // Image 설정
+    banner.setPrompt(request.getAddInformation());
+    banner.setImage(image); // 관계 주입
 
     return bannerRepository.save(banner);
   }
 
+  @Transactional(readOnly = true)
   public Banner getBannerById(Long bannerId) {
     return bannerRepository.findById(bannerId)
         .orElseThrow(() -> new RuntimeException("배너를 찾을 수 없습니다."));
@@ -62,12 +61,11 @@ public class BannerService {
 
   public Banner updateBanner(Long bannerId, BannerRequest request) {
     return bannerRepository.findById(bannerId).map(banner -> {
-      // Image 엔티티 조회
-      Image image = imageRepository.findById(request.getImageId())
+      Image image = imageRepository.findActiveImageById(request.getImageId())
           .orElseThrow(() -> new RuntimeException("이미지를 찾을 수 없습니다."));
 
       String imageUrl = image.getImageUrl();
-      // GPT를 이용해 광고 문구 재생성
+
       GeneratedTexts texts = gptService.generateAdTexts(
           request.getItemName(),
           request.getItemConcept(),
@@ -76,7 +74,6 @@ public class BannerService {
           imageUrl
       );
 
-      // Banner 객체 업데이트
       banner.setMainText1(texts.getMainText1());
       banner.setServText1(texts.getServText1());
       banner.setMainText2(texts.getMainText2());
@@ -84,8 +81,8 @@ public class BannerService {
       banner.setItemName(request.getItemName());
       banner.setItemConcept(request.getItemConcept());
       banner.setItemCategory(request.getItemCategory());
-      banner.setPrompt(request.getAddInformation()); //add_information을 prompt로 저장
-      banner.setImage(image); // Image 업데이트
+      banner.setPrompt(request.getAddInformation());
+      banner.setImage(image); // 업데이트도 동일
 
       return bannerRepository.save(banner);
     }).orElseThrow(() -> new RuntimeException("배너를 찾을 수 없습니다."));
