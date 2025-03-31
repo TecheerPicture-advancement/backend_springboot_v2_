@@ -59,8 +59,8 @@ services:
     image: grafana/k6
     container_name: k6-load-test
     volumes:
-      - ./k6-test.js:/k6-test.js
-    command: ["run", "/k6-test.js"]
+      - ./k6-tests:/k6-tests
+    entrypoint: [ "/bin/sh", "-c", "if [ \"$K6_ENABLED\" = \"true\" ]; then k6 run /k6-tests/${K6_SCRIPT}; else echo 'K6 disabled'; fi" ]
     depends_on:
       backend:
         condition: service_healthy

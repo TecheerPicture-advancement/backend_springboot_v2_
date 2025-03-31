@@ -8,10 +8,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.concurrent.CompletableFuture;
 
 import com.techeerpicture.TecheerPicture.Banner.service.BannerService;
 import com.techeerpicture.TecheerPicture.Banner.dto.BannerRequest;
 import com.techeerpicture.TecheerPicture.Banner.entity.Banner;
+import com.techeerpicture.TecheerPicture.Banner.dto.BannerBulkRequest;
 
 
 @RestController
@@ -50,6 +54,37 @@ public class BannerController {
       errorResponse.put("error", e.getMessage());
 
       return ResponseEntity.status(500).body(errorResponse);
+    }
+  }
+
+  @PostMapping("/collection")
+  @Operation(summary = "배너 다건 생성", description = "여러 배너를 병렬로 생성합니다.")
+  public ResponseEntity<Map<String, Object>> createBannerCollection(@RequestBody BannerBulkRequest bulkRequest) {
+    try {
+      List<Banner> banners = bannerService.createBannersInParallel(bulkRequest.getRequests());
+
+      List<Map<String, Object>> dataList = banners.stream().map(banner -> {
+        Map<String, Object> data = new LinkedHashMap<>();
+        data.put("id", banner.getId());
+        data.put("image_id", banner.getImage().getId());
+        data.put("maintext", banner.getMainText1());
+        data.put("servetext", banner.getServText1());
+        data.put("maintext2", banner.getMainText2());
+        data.put("servetext2", banner.getServText2());
+        return data;
+      }).collect(Collectors.toList());
+
+      return ResponseEntity.status(201).body(Map.of(
+          "code", 201,
+          "message", "배너 다건 생성 성공",
+          "data", dataList
+      ));
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body(Map.of(
+          "code", 500,
+          "message", "배너 다건 생성 실패",
+          "error", e.getMessage()
+      ));
     }
   }
 

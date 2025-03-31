@@ -1,3 +1,4 @@
+
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
@@ -36,3 +37,4 @@ function testBannerAPI() {
         'Banner API 응답 상태가 200인가?': (r) => r.status === 200 || r.status === 201
     });
 }
+

@@ -14,6 +14,9 @@ import com.techeerpicture.TecheerPicture.Banner.util.GeneratedTexts;
 
 import java.util.concurrent.CompletableFuture;
 
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Service
 public class BannerService {
@@ -56,6 +59,44 @@ GeneratedTexts texts = futureTexts.join();
     banner.setImage(image); // 관계 주입
 
     return bannerRepository.save(banner);
+  }
+
+  public List<Banner> createBannersInParallel(List<BannerRequest> requests) {
+    List<CompletableFuture<Banner>> futures = requests.stream()
+        .map(request -> CompletableFuture.supplyAsync(() -> {
+          Image image = imageRepository.findActiveImageById(request.getImageId())
+              .orElseThrow(() -> new RuntimeException("이미지를 찾을 수 없습니다."));
+          String imageUrl = image.getImageUrl();
+
+          GeneratedTexts texts = gptService.generateAdTexts(
+              request.getItemName(), request.getItemConcept(),
+              request.getItemCategory(), request.getAddInformation(), imageUrl
+          );
+
+          Banner banner = new Banner();
+          banner.setMainText1(texts.getMainText1());
+          banner.setServText1(texts.getServText1());
+          banner.setMainText2(texts.getMainText2());
+          banner.setServText2(texts.getServText2());
+          banner.setItemName(request.getItemName());
+          banner.setItemConcept(request.getItemConcept());
+          banner.setItemCategory(request.getItemCategory());
+          banner.setPrompt(request.getAddInformation());
+          banner.setImage(image);
+
+          return banner;
+        }))
+        .collect(Collectors.toList());
+
+    // 모든 비동기 작업 완료 대기
+    CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+
+    // 결과 수집 후 저장
+    List<Banner> banners = futures.stream()
+        .map(CompletableFuture::join)
+        .collect(Collectors.toList());
+
+    return bannerRepository.saveAll(banners);
   }
 
   @Transactional(readOnly = true)
