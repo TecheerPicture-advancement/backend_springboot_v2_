@@ -10,13 +10,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.concurrent.CompletableFuture;
 
 import com.techeerpicture.TecheerPicture.Banner.service.BannerService;
 import com.techeerpicture.TecheerPicture.Banner.dto.BannerRequest;
 import com.techeerpicture.TecheerPicture.Banner.entity.Banner;
 import com.techeerpicture.TecheerPicture.Banner.dto.BannerBulkRequest;
-
 
 @RestController
 @RequestMapping("/api/v1/banners")
@@ -29,63 +27,45 @@ public class BannerController {
   @Operation(summary = "광고 텍스트 생성", description = "입력된 정보를 바탕으로 광고 텍스트를 생성합니다.")
   @PostMapping
   public ResponseEntity<Map<String, Object>> createBanner(@RequestBody BannerRequest request) {
-    try {
-      Banner banner = bannerService.createBanner(request);
-      // 응답 데이터 구성
-      Map<String, Object> data = new LinkedHashMap<>();
-      data.put("id", banner.getId());
-      data.put("image_id", banner.getImage().getId()); // image_id 변경
-      data.put("servetext", banner.getServText1());
-      data.put("maintext", banner.getMainText1());
-      data.put("servetext2", banner.getServText2());
-      data.put("maintext2", banner.getMainText2());
+    Banner banner = bannerService.createBanner(request);
 
-      Map<String, Object> response = new LinkedHashMap<>();
-      response.put("code", 201);
-      response.put("message", "배너 생성 성공");
-      response.put("data", data);
+    Map<String, Object> data = new LinkedHashMap<>();
+    data.put("id", banner.getId());
+    data.put("image_id", banner.getImage().getId());
+    data.put("maintext", banner.getMainText1());
+    data.put("servetext", banner.getServText1());
+    data.put("maintext2", banner.getMainText2());
+    data.put("servetext2", banner.getServText2());
 
-      return ResponseEntity.status(201).body(response);
-    } catch (Exception e) {
-      // 오류 응답
-      Map<String, Object> errorResponse = new LinkedHashMap<>();
-      errorResponse.put("code", 500);
-      errorResponse.put("message", "서버 내부 오류");
-      errorResponse.put("error", e.getMessage());
+    Map<String, Object> response = new LinkedHashMap<>();
+    response.put("code", 201);
+    response.put("message", "배너 생성 성공");
+    response.put("data", data);
 
-      return ResponseEntity.status(500).body(errorResponse);
-    }
+    return ResponseEntity.status(201).body(response);
   }
 
   @PostMapping("/collection")
-  @Operation(summary = "배너 다건 생성", description = "여러 배너를 병렬로 생성합니다.")
   public ResponseEntity<Map<String, Object>> createBannerCollection(@RequestBody BannerBulkRequest bulkRequest) {
-    try {
-      List<Banner> banners = bannerService.createBannersInParallel(bulkRequest.getRequests());
+    List<Banner> banners = bannerService.createBannersInParallel(bulkRequest.getRequests());
 
-      List<Map<String, Object>> dataList = banners.stream().map(banner -> {
-        Map<String, Object> data = new LinkedHashMap<>();
-        data.put("id", banner.getId());
-        data.put("image_id", banner.getImage().getId());
-        data.put("maintext", banner.getMainText1());
-        data.put("servetext", banner.getServText1());
-        data.put("maintext2", banner.getMainText2());
-        data.put("servetext2", banner.getServText2());
-        return data;
-      }).collect(Collectors.toList());
+    List<Map<String, Object>> dataList = banners.stream().map(banner -> {
+      Map<String, Object> data = new LinkedHashMap<>();
+      data.put("id", banner.getId());
+      data.put("image_id", banner.getImage().getId());
+      data.put("maintext", banner.getMainText1());
+      data.put("servetext", banner.getServText1());
+      data.put("maintext2", banner.getMainText2());
+      data.put("servetext2", banner.getServText2());
+      return data;
+    }).collect(Collectors.toList());
 
-      return ResponseEntity.status(201).body(Map.of(
-          "code", 201,
-          "message", "배너 다건 생성 성공",
-          "data", dataList
-      ));
-    } catch (Exception e) {
-      return ResponseEntity.status(500).body(Map.of(
-          "code", 500,
-          "message", "배너 다건 생성 실패",
-          "error", e.getMessage()
-      ));
-    }
+    Map<String, Object> response = new LinkedHashMap<>();
+    response.put("code", 201);
+    response.put("message", "배너 다건 생성 성공");
+    response.put("data", dataList);
+
+    return ResponseEntity.status(201).body(response);
   }
 
   @GetMapping("/{bannerId}")
@@ -94,14 +74,13 @@ public class BannerController {
     try {
       Banner banner = bannerService.getBannerById(bannerId);
 
-      // 응답 데이터 구성
       Map<String, Object> data = new LinkedHashMap<>();
       data.put("id", banner.getId());
-      data.put("image_id", banner.getImage().getId()); // image_id 변경
-      data.put("servetext", banner.getServText1());
+      data.put("image_id", banner.getImage().getId());
       data.put("maintext", banner.getMainText1());
-      data.put("servetext2", banner.getServText2());
+      data.put("servetext", banner.getServText1());
       data.put("maintext2", banner.getMainText2());
+      data.put("servetext2", banner.getServText2());
 
       Map<String, Object> response = new LinkedHashMap<>();
       response.put("code", 200);
@@ -128,26 +107,27 @@ public class BannerController {
     try {
       Banner updatedBanner = bannerService.updateBanner(bannerId, request);
 
-      // 응답 데이터 구성
-      Map<String, Object> responseData = new LinkedHashMap<>();
-      responseData.put("code", 200);
-      responseData.put("message", "배너 수정 성공");
-      responseData.put("data", Map.of(
-          "id", updatedBanner.getId(),
-          "image_id", updatedBanner.getImage().getId(), // image_id 변경
-          "servetext", updatedBanner.getServText1(),
-          "maintext", updatedBanner.getMainText1(),
-          "servetext2", updatedBanner.getServText2(),
-          "maintext2", updatedBanner.getMainText2()
-      ));
+      Map<String, Object> data = new LinkedHashMap<>();
+      data.put("id", updatedBanner.getId());
+      data.put("image_id", updatedBanner.getImage().getId());
+      data.put("maintext", updatedBanner.getMainText1());
+      data.put("servetext", updatedBanner.getServText1());
+      data.put("maintext2", updatedBanner.getMainText2());
+      data.put("servetext2", updatedBanner.getServText2());
 
-      return ResponseEntity.ok(responseData);
+      Map<String, Object> response = new LinkedHashMap<>();
+      response.put("code", 200);
+      response.put("message", "배너 수정 성공");
+      response.put("data", data);
+
+      return ResponseEntity.ok(response);
     } catch (Exception e) {
-      return ResponseEntity.status(500).body(Map.of(
-          "code", 500,
-          "message", "배너 수정 실패",
-          "error", e.getMessage()
-      ));
+      Map<String, Object> error = new LinkedHashMap<>();
+      error.put("code", 500);
+      error.put("message", "배너 수정 실패");
+      error.put("error", e.getMessage());
+
+      return ResponseEntity.status(500).body(error);
     }
   }
 
@@ -157,18 +137,18 @@ public class BannerController {
     try {
       bannerService.deleteBanner(bannerId);
 
-      // 응답 데이터 구성
-      Map<String, Object> responseData = new LinkedHashMap<>();
-      responseData.put("code", 200);
-      responseData.put("message", "배너 삭제 성공");
+      Map<String, Object> response = new LinkedHashMap<>();
+      response.put("code", 200);
+      response.put("message", "배너 삭제 성공");
 
-      return ResponseEntity.ok(responseData);
+      return ResponseEntity.ok(response);
     } catch (Exception e) {
-      return ResponseEntity.status(500).body(Map.of(
-          "code", 500,
-          "message", "배너 삭제 실패",
-          "error", e.getMessage()
-      ));
+      Map<String, Object> error = new LinkedHashMap<>();
+      error.put("code", 500);
+      error.put("message", "배너 삭제 실패");
+      error.put("error", e.getMessage());
+
+      return ResponseEntity.status(500).body(error);
     }
   }
 }

@@ -1,73 +1,149 @@
-version: '3.8'
+  version: '3.8'
 
-services:
-  db:
-    image: mysql:8
-    container_name: mysql-db
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    ports:
-      - "3306:3306"
-    volumes:
-      - db_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+  services:
+    db:
+      image: mysql:8
+      container_name: mysql-db
+      environment:
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        MYSQL_DATABASE: ${MYSQL_DATABASE}
+        MYSQL_USER: ${MYSQL_USER}
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      ports:
+        - "3306:3306"
+      volumes:
+        - db_data:/var/lib/mysql
+      healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+      networks:
+        - techeer-network
 
-  flyway:
-    image: flyway/flyway:11.0.0
-    container_name: flyway-migration
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      FLYWAY_URL: ${SPRING_DATASOURCE_URL}
-      FLYWAY_USER: ${SPRING_DATASOURCE_USERNAME}
-      FLYWAY_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
-    volumes:
-      - ./src/main/resources/db/migration:/flyway/sql
-    command: migrate
+    flyway:
+      image: flyway/flyway:11.0.0
+      container_name: flyway-migration
+      depends_on:
+        db:
+          condition: service_healthy
+      environment:
+        FLYWAY_URL: ${SPRING_DATASOURCE_URL}
+        FLYWAY_USER: ${SPRING_DATASOURCE_USERNAME}
+        FLYWAY_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      volumes:
+        - ./src/main/resources/db/migration:/flyway/sql
+      command: migrate
+      restart: on-failure
+      networks:
+        - techeer-network
 
-  backend:
-    build:
-      context: .
-    container_name: spring-boot-app
-    env_file: .env
-    ports:
-      - "8080:8080"
-    depends_on:
-      db:
-        condition: service_healthy
-      flyway:
-        condition: service_completed_successfully
-    environment:
-      - SPRING_SERVLET_MULTIPART_ENABLED=true
-      - SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE=1000MB
-      - SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE=1000MB
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    backend:
+      build:
+        context: .
+      container_name: spring-boot-app
+      env_file: .env
+      ports:
+        - "8080:8080"
+      depends_on:
+        db:
+          condition: service_healthy
+        flyway:
+          condition: service_completed_successfully
+      environment:
+        - SPRING_SERVLET_MULTIPART_ENABLED=true
+        - SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE=1000MB
+        - SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE=1000MB
+      healthcheck:
+        test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+      networks:
+        - techeer-network
 
-  k6:
-    image: grafana/k6
-    container_name: k6-load-test
-    volumes:
-      - ./k6-tests:/k6-tests
-    entrypoint: [ "/bin/sh", "-c", "if [ \"$K6_ENABLED\" = \"true\" ]; then k6 run /k6-tests/${K6_SCRIPT}; else echo 'K6 disabled'; fi" ]
-    depends_on:
-      backend:
-        condition: service_healthy
+    prometheus:
+      image: prom/prometheus:latest
+      container_name: prometheus
+      ports:
+        - "9090:9090"
+      volumes:
+        - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+        - prometheus_data:/prometheus
+      command:
+        - "--storage.tsdb.retention.time=30d"
+        - "--config.file=/etc/prometheus/prometheus.yml"
+      healthcheck:
+        test: ["CMD", "wget", "--spider", "-q", "http://localhost:9090/-/healthy"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+      depends_on:
+        - backend
+      networks:
+        - techeer-network
 
-volumes:
-  db_data:
+    grafana:
+      image: grafana/grafana:latest
+      container_name: grafana
+      ports:
+        - "3000:3000"
+      volumes:
+        - ./grafana/provisioning:/etc/grafana/provisioning
+        - ./grafana/dashboards:/var/lib/grafana/dashboards
+        - grafana-data:/var/lib/grafana
+      environment:
+        - GF_SECURITY_ADMIN_USER=admin
+        - GF_SECURITY_ADMIN_PASSWORD=admin
+      healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:3000/login"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+      depends_on:
+        prometheus:
+          condition: service_healthy
+      networks:
+        - techeer-network
 
-networks:
-  default:
-    name: techeer-network
+    k6:
+      image: grafana/k6
+      container_name: k6-load-test
+      volumes:
+        - ./k6-tests:/k6-tests
+      entrypoint: >
+        /bin/sh -c "
+          echo '🕒 Waiting for backend, Prometheus, and Grafana to be healthy...';
+          until wget --spider -q http://spring-boot-app:8080/actuator/health &&
+                wget --spider -q http://prometheus:9090/-/healthy &&
+                wget --spider -q http://grafana:3000/login;
+          do
+            echo '⏳ Waiting for all services...';
+            sleep 5;
+          done;
+          echo '🚀 All services are healthy. Running K6...';
+          if [ \"$K6_ENABLED\" = \"true\" ]; then
+            k6 run /k6-tests/${K6_SCRIPT};
+          else
+            echo 'K6 disabled';
+          fi
+        "
+
+      depends_on:
+        backend:
+          condition: service_healthy
+        prometheus:
+          condition: service_healthy
+        grafana:
+          condition: service_healthy
+      networks:
+        - techeer-network
+
+  volumes:
+    db_data:
+    prometheus_data:
+    grafana-data:
+
+  networks:
+    techeer-network:
+      name: techeer-network
