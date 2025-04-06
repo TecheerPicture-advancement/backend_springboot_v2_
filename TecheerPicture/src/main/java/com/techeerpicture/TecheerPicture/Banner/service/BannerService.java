@@ -1,19 +1,20 @@
 package com.techeerpicture.TecheerPicture.Banner.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.techeerpicture.TecheerPicture.Image.entity.Image;
-import com.techeerpicture.TecheerPicture.Image.repository.ImageRepository;
-import com.techeerpicture.TecheerPicture.Banner.repository.BannerRepository;
 import com.techeerpicture.TecheerPicture.Banner.dto.BannerRequest;
 import com.techeerpicture.TecheerPicture.Banner.entity.Banner;
 import com.techeerpicture.TecheerPicture.Banner.external.GPTService;
+import com.techeerpicture.TecheerPicture.Banner.repository.BannerRepository;
 import com.techeerpicture.TecheerPicture.Banner.util.GeneratedTexts;
+import com.techeerpicture.TecheerPicture.Image.entity.Image;
+import com.techeerpicture.TecheerPicture.Image.repository.ImageRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +28,10 @@ public class BannerService {
 
   @Autowired
   private ImageRepository imageRepository;
+
+  @Autowired
+  @Qualifier("gptExecutor")
+  private Executor gptExecutor;
 
   public Banner createBanner(BannerRequest request) {
     Image image = imageRepository.findById(request.getImageId())
@@ -54,38 +59,36 @@ public class BannerService {
 
   public List<Banner> createBannersInParallel(List<BannerRequest> requests) {
     List<CompletableFuture<Banner>> futures = requests.stream()
-        .map(request ->
-            CompletableFuture.supplyAsync(() ->
-                imageRepository.findById(request.getImageId())
-                    .orElseThrow(() -> new RuntimeException("이미지를 찾을 수 없습니다."))
-            ).thenCompose(image ->
-                gptService.generateAdTextsAsync(
-                    request.getItemName(), request.getItemConcept(),
-                    request.getItemCategory(), request.getAddInformation(),
-                    image.getImageUrl()
-                ).thenApply(texts -> {
-                  Banner banner = new Banner();
-                  banner.setMainText1(texts.getMainText1());
-                  banner.setServText1(texts.getServText1());
-                  banner.setMainText2(texts.getMainText2());
-                  banner.setServText2(texts.getServText2());
-                  banner.setItemName(request.getItemName());
-                  banner.setItemConcept(request.getItemConcept());
-                  banner.setItemCategory(request.getItemCategory());
-                  banner.setPrompt(request.getAddInformation());
-                  banner.setImage(image);
-                  return banner;
-                })
-            )
-        ).collect(Collectors.toList());
+        .map(request -> {
+          Image image = imageRepository.findById(request.getImageId())
+              .orElseThrow(() -> new RuntimeException("이미지를 찾을 수 없습니다."));
+
+          return gptService.generateAdTextsAsync(
+              request.getItemName(), request.getItemConcept(),
+              request.getItemCategory(), request.getAddInformation(),
+              image.getImageUrl()
+          ).thenApplyAsync(texts -> {
+            Banner banner = new Banner();
+            banner.setMainText1(texts.getMainText1());
+            banner.setServText1(texts.getServText1());
+            banner.setMainText2(texts.getMainText2());
+            banner.setServText2(texts.getServText2());
+            banner.setItemName(request.getItemName());
+            banner.setItemConcept(request.getItemConcept());
+            banner.setItemCategory(request.getItemCategory());
+            banner.setPrompt(request.getAddInformation());
+            banner.setImage(image);
+            return banner;
+          }, gptExecutor);
+        })
+        .collect(Collectors.toList());
 
     CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 
-    List<Banner> banners = futures.stream()
+    return futures.stream()
         .map(CompletableFuture::join)
+        .map(bannerRepository::save)
         .collect(Collectors.toList());
-
-    return bannerRepository.saveAll(banners);
   }
 
   @Transactional(readOnly = true)
@@ -98,14 +101,12 @@ public class BannerService {
     return bannerRepository.findById(bannerId).map(banner -> {
       Image image = imageRepository.findById(request.getImageId())
           .orElseThrow(() -> new RuntimeException("이미지를 찾을 수 없습니다."));
-      String imageUrl = image.getImageUrl();
 
-      CompletableFuture<GeneratedTexts> futureTexts = gptService.generateAdTextsAsync(
-          request.getItemName(), request.getItemConcept(), request.getItemCategory(),
-          request.getAddInformation(), imageUrl
+      GeneratedTexts texts = gptService.generateAdTexts(
+          request.getItemName(), request.getItemConcept(),
+          request.getItemCategory(), request.getAddInformation(),
+          image.getImageUrl()
       );
-
-      GeneratedTexts texts = futureTexts.join();
 
       banner.setMainText1(texts.getMainText1());
       banner.setServText1(texts.getServText1());
