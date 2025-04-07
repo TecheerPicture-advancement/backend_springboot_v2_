@@ -17,7 +17,17 @@ public class GPTService {
   @Value("${GPT_API}")
   private String apiKey;
 
-  public GeneratedTexts generateAdTexts(String itemName, String itemConcept, String itemCategory, String addInformation, String imageUrl) {
+  @Async("gptExecutor")
+  public CompletableFuture<GeneratedTexts> generateAdTexts(
+      String itemName, String itemConcept, String itemCategory,
+      String addInformation, String imageUrl
+  ) {
+    return CompletableFuture.completedFuture(
+        generateAdTextsSync(itemName, itemConcept, itemCategory, addInformation, imageUrl)
+    );
+  }
+
+  public GeneratedTexts generateAdTextsSync(String itemName, String itemConcept, String itemCategory, String addInformation, String imageUrl) {
     String apiUrl = "https://api.openai.com/v1/chat/completions";
 
     String prompt = String.format(
@@ -27,7 +37,7 @@ public class GPTService {
             "카테고리: '%s'\n" +
             "추가 정보: '%s'\n\n" +
             "이 이미지url 을 분석해주세요. : '%s'\n\n" +
-            "이미지 분위기를 제품 정보에 추가적으로  반영하여 광고 문구를 생성하세요.\n" +
+            "이미지 분위기를 제품 정보에 추가적으로 반영하여 광고 문구를 생성하세요.\n" +
             "각 광고는 메인 문장(maintext)과 서브 문장(servtext)로 구성됩니다.\n" +
             "출력 형식:\n" +
             "- 세트 1:\n" +
@@ -40,7 +50,7 @@ public class GPTService {
     );
 
     Map<String, Object> requestBody = Map.of(
-        "model", "gpt-4o",
+        "model", "gpt-3.5-turbo",
         "messages", List.of(
             Map.of("role", "system", "content", "You are a helpful assistant."),
             Map.of("role", "user", "content", prompt)
@@ -73,19 +83,9 @@ public class GPTService {
       }
 
       return parseGeneratedText(generatedText);
-
     } catch (Exception e) {
       throw new RuntimeException("GPT 호출 실패: " + e.getMessage(), e);
     }
-  }
-
-  @Async("gptExecutor")
-  public CompletableFuture<GeneratedTexts> generateAdTextsAsync(
-      String itemName, String itemConcept, String itemCategory,
-      String addInformation, String imageUrl
-  ) {
-    GeneratedTexts texts = generateAdTexts(itemName, itemConcept, itemCategory, addInformation, imageUrl);
-    return CompletableFuture.completedFuture(texts);
   }
 
   private GeneratedTexts parseGeneratedText(String generatedText) {
@@ -101,18 +101,14 @@ public class GPTService {
 
   private String findText(String[] lines, String setMarker, String startMarker, String endMarker) {
     boolean isInSet = false;
-
     for (String line : lines) {
-      if (setMarker != null && line.contains(setMarker)) {
-        isInSet = true;
-      }
+      if (setMarker != null && line.contains(setMarker)) isInSet = true;
 
       if (isInSet && line.contains(startMarker)) {
         int startIndex = line.indexOf(startMarker) + startMarker.length();
         int endIndex = (endMarker != null && line.contains(endMarker))
             ? line.indexOf(endMarker, startIndex)
             : line.length();
-
         return line.substring(startIndex, endIndex).trim();
       }
     }
@@ -120,7 +116,6 @@ public class GPTService {
   }
 
   private String removeQuotes(String text) {
-    if (text == null) return "";
-    return text.replaceAll("^\"|\"$", "");
+    return text == null ? "" : text.replaceAll("^\"|\"$", "");
   }
 }
