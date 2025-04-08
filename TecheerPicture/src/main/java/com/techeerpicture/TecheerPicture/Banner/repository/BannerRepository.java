@@ -2,7 +2,7 @@ package com.techeerpicture.TecheerPicture.Banner.repository;
 
 import com.techeerpicture.TecheerPicture.Banner.entity.Banner;
 import org.springframework.data.jpa.repository.JpaRepository;
-
+import java.util.List;
 /**
  * BannerRepository
  *
@@ -15,4 +15,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *   - Long: 엔티티의 기본 키 데이터 타입
  */
 public interface BannerRepository extends JpaRepository<Banner, Long> {
+  List<Banner> findAllByImage_Id(Long imageId);
 }

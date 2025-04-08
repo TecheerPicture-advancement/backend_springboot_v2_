@@ -14,7 +14,7 @@ public class Banner {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @OneToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "image_id", referencedColumnName = "id", nullable = false)
   private Image image;
 

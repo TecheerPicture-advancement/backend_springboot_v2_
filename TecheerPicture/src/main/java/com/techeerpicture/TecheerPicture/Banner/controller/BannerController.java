@@ -98,6 +98,30 @@ public class BannerController {
     }
   }
 
+  @GetMapping("/image/{imageId}")
+  @Operation(summary = "이미지 ID로 배너 조회", description = "이미지 ID로 연결된 배너 목록을 조회합니다. (N+1 발생 예시)")
+  public ResponseEntity<Map<String, Object>> getBannersByImageId(@PathVariable Long imageId) {
+    List<Banner> banners = bannerService.getBannersByImageId(imageId);
+
+    List<Map<String, Object>> dataList = banners.stream().map(banner -> {
+      Map<String, Object> data = new LinkedHashMap<>();
+      data.put("id", banner.getId());
+      data.put("image_id", banner.getImage().getId());
+      data.put("maintext", banner.getMainText1());
+      data.put("servetext", banner.getServText1());
+      data.put("maintext2", banner.getMainText2());
+      data.put("servetext2", banner.getServText2());
+      return data;
+    }).collect(Collectors.toList());
+
+    Map<String, Object> response = new LinkedHashMap<>();
+    response.put("code", 200);
+    response.put("message", "이미지 ID로 배너 조회 성공");
+    response.put("data", dataList);
+
+    return ResponseEntity.ok(response);
+  }
+
   @PutMapping("/{bannerId}")
   @Operation(summary = "광고 텍스트 수정", description = "배너 ID를 통해 광고 텍스트를 수정합니다.")
   public ResponseEntity<Map<String, Object>> updateBanner(
