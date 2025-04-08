@@ -1,0 +1,83 @@
+spring:
+  application:
+    name: TecheerPicture
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  main:
+    allow-bean-definition-overriding: true
+
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    serialization:
+      indent_output: true
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${AWS_S3_ACCESSKEY}
+      secretKey: ${AWS_S3_SECRETKEY}
+    s3:
+      region:
+        static: ${AWS_S3_REGION}
+      bucket: techeer-picture-bucket
+
+server:
+  port: 8080
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+
+IG_APP_ID: ${IG_APP_ID}
+IG_ID: ${IG_ID}
+ACCESS_TOKEN: ${ACCESS_TOKEN}
+INSTAGRAM_APP_SECRET: ${INSTAGRAM_APP_SECRET}
+INSTAGRAM_REDIRECT_URI: ${INSTAGRAM_REDIRECT_URI}
+INSTAGRAM_AUTH_URL: ${INSTAGRAM_AUTH_URL}
+INSTAGRAM_TOKEN_URL: ${INSTAGRAM_TOKEN_URL}
+INSTAGRAM_LONG_LIVED_TOKEN_URL: ${INSTAGRAM_LONG_LIVED_TOKEN_URL}
+INSTAGRAM_REFRESH_TOKEN_URL: ${INSTAGRAM_REFRESH_TOKEN_URL}
+
+fal:
+  api:
+    key: ${FAL_KEY}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    prometheus:
+      enabled: true
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
