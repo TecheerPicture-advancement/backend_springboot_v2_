@@ -122,4 +122,14 @@ public class BannerService {
 
     return bannerRepository.save(banner);
   }
+
+  @Transactional(readOnly = true)
+  public List<Banner> getBannersByImageId(Long imageId) {
+    List<Banner> banners = bannerRepository.findAllByImage_Id(imageId);
+    for (Banner banner : banners) {
+      banner.getImage().getImageUrl();
+    }
+
+    return banners;
+  }
 }
