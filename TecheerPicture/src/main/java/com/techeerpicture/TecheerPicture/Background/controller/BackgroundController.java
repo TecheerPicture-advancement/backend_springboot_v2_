@@ -56,6 +56,7 @@ public class BackgroundController {
         Background background = backgroundService.createAndSaveBackground(processedRequest);
         BackgroundResponse response = new BackgroundResponse(
             background.getId(),
+            backgroundRequest.getImageId(),
             background.getImageUrl(),
             background.getScene(),
             background.getPrompt()
