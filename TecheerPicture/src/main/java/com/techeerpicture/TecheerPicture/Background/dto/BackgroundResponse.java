@@ -2,13 +2,15 @@ package com.techeerpicture.TecheerPicture.Background.dto;
 
 public class BackgroundResponse {
     private Long id;
+    private Long imageId;
     private String imageUrl;
     private String scene;
     private String prompt;
 
-    // 매개변수를 받는 생성자 추가
-    public BackgroundResponse(Long id, String imageUrl, String scene, String prompt) {
+    // ✅ 5개 파라미터 받는 생성자
+    public BackgroundResponse(Long id, Long imageId, String imageUrl, String scene, String prompt) {
         this.id = id;
+        this.imageId = imageId;
         this.imageUrl = imageUrl;
         this.scene = scene;
         this.prompt = prompt;
@@ -21,6 +23,14 @@ public class BackgroundResponse {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(Long imageId) {
+        this.imageId = imageId;
     }
 
     public String getImageUrl() {

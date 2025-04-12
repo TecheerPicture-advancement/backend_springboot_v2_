@@ -6,6 +6,7 @@ import com.techeerpicture.TecheerPicture.Background.entity.ImageTransform;
 
 public class BackgroundRequest {
 
+    @JsonProperty("imageId")
     private Long imageId;
     private ImageTransform imageTransform;
     private String scene;
