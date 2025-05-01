@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 @Tag(name = "instagram-texts API", description = "인스타 피드 문장 CRUD API")
 @RestController
 @RequestMapping("/api/v1/instagram-texts")
+@CrossOrigin(origins = {"http://localhost:3000", "https://252f-211-201-196-64.ngrok-free.app"})
 public class InstagramTextController {
 
     private static final Logger logger = LoggerFactory.getLogger(InstagramTextController.class);
@@ -36,17 +37,21 @@ public class InstagramTextController {
     private GPTPidText gptPidText;
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> generateInstagramText(@RequestBody InstagramTextRequest request) {
+    public ResponseEntity<Map<String, Object>> generateInstagramText(
+            @RequestParam String userId,
+            @RequestParam String accessToken,
+            @RequestBody InstagramTextRequest request) {
+
         Long imageId = request.getImageId();
         String textPrompt = request.getTextPrompt();
 
         RestTemplate restTemplate = new RestTemplate();
-        String mediaUrl = "http://localhost:8080/api/instagram/media";
+        String mediaUrl = "http://localhost:8080/api/v1/instagram/media?user_id=" + userId + "&access_token=" + accessToken;
+
         ResponseEntity<List> mediaResponse = restTemplate.getForEntity(mediaUrl, List.class);
-
         List<Map<String, Object>> mediaList = mediaResponse.getBody();
-        List<String> captions = new ArrayList<>();
 
+        List<String> captions = new ArrayList<>();
         if (mediaList != null) {
             for (Map<String, Object> media : mediaList) {
                 if (media.containsKey("caption")) {
@@ -56,7 +61,7 @@ public class InstagramTextController {
         }
 
         if (captions.size() > 10) {
-            captions = captions.subList(0, 10); // 리스트 앞에서부터 10개만 가져오기
+            captions = captions.subList(0, 10);
         }
 
         logger.info("Instagram에서 가져온 최신 10개 caption 리스트: {}", captions);
@@ -66,7 +71,6 @@ public class InstagramTextController {
                 captionExamples + "\n\nUser Prompt: " + textPrompt;
 
         String generatedText = gptPidText.analyzeImageAndGenerateText(fullPrompt);
-
         InstagramText instagramText = instagramTextService.saveGeneratedText(imageId, generatedText);
 
         return ResponseEntity.ok(Map.of(

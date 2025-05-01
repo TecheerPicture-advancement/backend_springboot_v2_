@@ -43,6 +43,7 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok:1.18.28'
 	annotationProcessor 'org.projectlombok:lombok:1.18.28'
 	implementation 'jakarta.persistence:jakarta.persistence-api:3.1.0'
+	implementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
 	implementation 'javax.annotation:javax.annotation-api:1.3.2'
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
@@ -57,6 +58,7 @@ dependencies {
 	runtimeOnly 'mysql:mysql-connector-java' // MySQL DB 사용 시 필요
 	implementation 'org.json:json:20210307'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'com.squareup.okhttp3:okhttp:4.11.0' //외부 API 호출 OkHttp 사용
 }
 
